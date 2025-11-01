@@ -2,4 +2,14 @@ syntax = "proto3";
 
 package sentencegen;
 
-option go_package = "";
+option go_package = "github.com/dafraer/sentence-gen-grpc-server/proto";
+
+message HelloWorldRequest {}
+
+message HelloWorldResponse {
+    string message = 1;
+}
+
+service SentenceGen {
+    rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse);
+}
