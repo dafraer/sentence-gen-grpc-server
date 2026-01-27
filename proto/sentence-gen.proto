@@ -2,14 +2,56 @@ syntax = "proto3";
 
 package sentencegen;
 
-option go_package = "github.com/dafraer/sentence-gen-grpc-server/proto";
+option go_package = "client/proto";
 
-message HelloWorldRequest {}
-
-message HelloWorldResponse {
-    string message = 1;
+message Audio {
+  bytes data = 1;
 }
 
+message GenerateSentenceRequest {
+  string from_language = 1;
+  string to_language = 2;
+  string word = 3;
+  string translation = 4;
+  bool include_audio = 5;
+}
+
+message GenerateSentenceResponse {
+  string original_sentence = 1;
+  string translated_sentence = 2;
+  Audio audio = 3;
+}
+
+message GenerateDefinitionRequest {
+  string language = 1;
+  string word = 2;
+  string definition_hint = 3;
+  bool include_audio = 4;
+}
+
+message GenerateDefinitionResponse {
+  string word = 1;
+  string definition = 2;
+  Audio audio = 3;
+}
+
+message TranslateWordRequest {
+  string from_language = 1;
+  string to_language = 2;
+  string word = 3;
+  string translation_hint = 4;
+  bool include_audio = 5;
+}
+
+message TranslateWordResponse {
+  string original_word = 1;
+  string translated_word = 2;
+  Audio audio = 3;
+}
+
+
 service SentenceGen {
-    rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse);
+  rpc GenerateSentence(GenerateSentenceRequest) returns (GenerateSentenceResponse);
+  rpc TranslateWord(TranslateWordRequest) returns (TranslateWordResponse);
+  rpc GenerateDefinition(GenerateDefinitionRequest) returns (GenerateDefinitionResponse);
 }
