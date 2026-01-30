@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 
@@ -70,6 +69,8 @@ func main() {
 	//Create new service
 	srvc := service.New(ttsClient, geminiClient, sugar, store)
 
-	srv := server.NewServer()
-	srv.Run()
+	srv := server.NewServer(srvc, sugar)
+	if err := srv.Run(ctx); err != nil {
+		panic(err)
+	}
 }
