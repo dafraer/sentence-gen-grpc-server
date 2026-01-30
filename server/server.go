@@ -37,8 +37,8 @@ func (s *Server) GenerateDefinition(ctx context.Context, request *pb.GenerateDef
 	return &pb.GenerateDefinitionResponse{Definition: request.DefinitionHint}, nil
 }
 
-func (s *Server) Run(ctx context.Context) error {
-	l, err := net.Listen("tcp", "localhost:50051")
+func (s *Server) Run(ctx context.Context, addr string) error {
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		panic(err)
 	}

@@ -22,8 +22,8 @@ func main() {
 
 	geminiAPIKey := os.Getenv("GEMINI_API_KEY")
 	projectID := os.Getenv("PROJECT_ID")
-	port := os.Getenv("PORT")
-	if port == "" || geminiAPIKey == "" || projectID == "" {
+	addr := os.Getenv("ADDRESS")
+	if addr == "" || geminiAPIKey == "" || projectID == "" {
 		panic("Missing GEMINI_API_KEY, PROJECT_ID or PORT")
 	}
 
@@ -73,7 +73,7 @@ func main() {
 	srv := server.NewServer(srvc, sugar)
 
 	//Run the server
-	if err := srv.Run(ctx); err != nil {
+	if err := srv.Run(ctx, addr); err != nil {
 		panic(err)
 	}
 }
