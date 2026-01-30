@@ -42,12 +42,6 @@ func (s *Server) Run(ctx context.Context) error {
 	if err != nil {
 		panic(err)
 	}
-	defer func(l net.Listener) {
-		if err := l.Close(); err != nil {
-			s.logger.Errorw("Failed to close listener", "error", err)
-			panic(err)
-		}
-	}(l)
 
 	opts := []grpc.ServerOption{}
 	srv := grpc.NewServer(opts...)
@@ -65,7 +59,7 @@ func (s *Server) Run(ctx context.Context) error {
 		}
 		ch <- nil
 	}()
-	s.logger.Infow("Service is running")
+	s.logger.Infow("Server is running")
 
 	//Wait for the context to be done or for an error to occur and shutdown the server
 	select {

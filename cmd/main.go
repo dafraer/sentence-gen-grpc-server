@@ -69,7 +69,10 @@ func main() {
 	//Create new service
 	srvc := service.New(ttsClient, geminiClient, sugar, store)
 
+	//Create new grpc server
 	srv := server.NewServer(srvc, sugar)
+
+	//Run the server
 	if err := srv.Run(ctx); err != nil {
 		panic(err)
 	}
