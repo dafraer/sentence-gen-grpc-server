@@ -27,9 +27,9 @@ func (s *Server) GenerateSentence(ctx context.Context, request *pb.GenerateSente
 	return &pb.GenerateSentenceResponse{}, nil
 }
 
-func (s *Server) TranslateWord(ctx context.Context, request *pb.TranslateWordRequest) (*pb.TranslateWordResponse, error) {
+func (s *Server) Translate(ctx context.Context, request *pb.TranslateRequest) (*pb.TranslateResponse, error) {
 	fmt.Println("TranslateWord")
-	return &pb.TranslateWordResponse{}, nil
+	return &pb.TranslateResponse{}, nil
 }
 
 func (s *Server) GenerateDefinition(ctx context.Context, request *pb.GenerateDefinitionRequest) (*pb.GenerateDefinitionResponse, error) {

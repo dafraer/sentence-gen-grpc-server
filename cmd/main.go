@@ -20,10 +20,10 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	geminiAPIKey := os.Getenv("GEMINI_API_KEY")
 	projectID := os.Getenv("PROJECT_ID")
 	addr := os.Getenv("ADDRESS")
-	if addr == "" || geminiAPIKey == "" || projectID == "" {
+	geminiModel := os.Getenv("GEMINI_MODEL")
+	if addr == "" || projectID == "" {
 		panic("Missing GEMINI_API_KEY, PROJECT_ID or PORT")
 	}
 
@@ -45,15 +45,10 @@ func main() {
 	}
 
 	//Create gemini client
-	geminiClient, err := gemini.New(ctx, geminiAPIKey, sugar)
+	geminiClient, err := gemini.New(ctx, sugar, geminiModel)
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err := geminiClient.Close(); err != nil {
-			panic(err)
-		}
-	}()
 
 	//Create tts client
 	ttsClient, err := tts.New(ctx, sugar)

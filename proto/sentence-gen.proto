@@ -35,7 +35,7 @@ message GenerateDefinitionResponse {
   Audio audio = 3;
 }
 
-message TranslateWordRequest {
+message TranslateRequest {
   string from_language = 1;
   string to_language = 2;
   string word = 3;
@@ -43,15 +43,15 @@ message TranslateWordRequest {
   bool include_audio = 5;
 }
 
-message TranslateWordResponse {
-  string original_word = 1;
-  string translated_word = 2;
+message TranslateResponse {
+  string original = 1;
+  string translation = 2;
   Audio audio = 3;
 }
 
 
 service SentenceGen {
   rpc GenerateSentence(GenerateSentenceRequest) returns (GenerateSentenceResponse);
-  rpc TranslateWord(TranslateWordRequest) returns (TranslateWordResponse);
+  rpc TranslateWord(TranslateRequest) returns (TranslateResponse);
   rpc GenerateDefinition(GenerateDefinitionRequest) returns (GenerateDefinitionResponse);
 }

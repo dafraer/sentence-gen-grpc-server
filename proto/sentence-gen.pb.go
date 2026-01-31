@@ -329,7 +329,7 @@ func (x *GenerateDefinitionResponse) GetAudio() *Audio {
 	return nil
 }
 
-type TranslateWordRequest struct {
+type TranslateRequest struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	FromLanguage    string                 `protobuf:"bytes,1,opt,name=from_language,json=fromLanguage,proto3" json:"from_language,omitempty"`
 	ToLanguage      string                 `protobuf:"bytes,2,opt,name=to_language,json=toLanguage,proto3" json:"to_language,omitempty"`
@@ -340,20 +340,20 @@ type TranslateWordRequest struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *TranslateWordRequest) Reset() {
-	*x = TranslateWordRequest{}
+func (x *TranslateRequest) Reset() {
+	*x = TranslateRequest{}
 	mi := &file_proto_sentence_gen_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TranslateWordRequest) String() string {
+func (x *TranslateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TranslateWordRequest) ProtoMessage() {}
+func (*TranslateRequest) ProtoMessage() {}
 
-func (x *TranslateWordRequest) ProtoReflect() protoreflect.Message {
+func (x *TranslateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_sentence_gen_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -365,69 +365,69 @@ func (x *TranslateWordRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TranslateWordRequest.ProtoReflect.Descriptor instead.
-func (*TranslateWordRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use TranslateRequest.ProtoReflect.Descriptor instead.
+func (*TranslateRequest) Descriptor() ([]byte, []int) {
 	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *TranslateWordRequest) GetFromLanguage() string {
+func (x *TranslateRequest) GetFromLanguage() string {
 	if x != nil {
 		return x.FromLanguage
 	}
 	return ""
 }
 
-func (x *TranslateWordRequest) GetToLanguage() string {
+func (x *TranslateRequest) GetToLanguage() string {
 	if x != nil {
 		return x.ToLanguage
 	}
 	return ""
 }
 
-func (x *TranslateWordRequest) GetWord() string {
+func (x *TranslateRequest) GetWord() string {
 	if x != nil {
 		return x.Word
 	}
 	return ""
 }
 
-func (x *TranslateWordRequest) GetTranslationHint() string {
+func (x *TranslateRequest) GetTranslationHint() string {
 	if x != nil {
 		return x.TranslationHint
 	}
 	return ""
 }
 
-func (x *TranslateWordRequest) GetIncludeAudio() bool {
+func (x *TranslateRequest) GetIncludeAudio() bool {
 	if x != nil {
 		return x.IncludeAudio
 	}
 	return false
 }
 
-type TranslateWordResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OriginalWord   string                 `protobuf:"bytes,1,opt,name=original_word,json=originalWord,proto3" json:"original_word,omitempty"`
-	TranslatedWord string                 `protobuf:"bytes,2,opt,name=translated_word,json=translatedWord,proto3" json:"translated_word,omitempty"`
-	Audio          *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+type TranslateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Original      string                 `protobuf:"bytes,1,opt,name=original,proto3" json:"original,omitempty"`
+	Translation   string                 `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
+	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TranslateWordResponse) Reset() {
-	*x = TranslateWordResponse{}
+func (x *TranslateResponse) Reset() {
+	*x = TranslateResponse{}
 	mi := &file_proto_sentence_gen_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TranslateWordResponse) String() string {
+func (x *TranslateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TranslateWordResponse) ProtoMessage() {}
+func (*TranslateResponse) ProtoMessage() {}
 
-func (x *TranslateWordResponse) ProtoReflect() protoreflect.Message {
+func (x *TranslateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_sentence_gen_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -439,26 +439,26 @@ func (x *TranslateWordResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TranslateWordResponse.ProtoReflect.Descriptor instead.
-func (*TranslateWordResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use TranslateResponse.ProtoReflect.Descriptor instead.
+func (*TranslateResponse) Descriptor() ([]byte, []int) {
 	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *TranslateWordResponse) GetOriginalWord() string {
+func (x *TranslateResponse) GetOriginal() string {
 	if x != nil {
-		return x.OriginalWord
+		return x.Original
 	}
 	return ""
 }
 
-func (x *TranslateWordResponse) GetTranslatedWord() string {
+func (x *TranslateResponse) GetTranslation() string {
 	if x != nil {
-		return x.TranslatedWord
+		return x.Translation
 	}
 	return ""
 }
 
-func (x *TranslateWordResponse) GetAudio() *Audio {
+func (x *TranslateResponse) GetAudio() *Audio {
 	if x != nil {
 		return x.Audio
 	}
@@ -493,21 +493,21 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\n" +
 	"definition\x18\x02 \x01(\tR\n" +
 	"definition\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xc0\x01\n" +
-	"\x14TranslateWordRequest\x12#\n" +
+	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xbc\x01\n" +
+	"\x10TranslateRequest\x12#\n" +
 	"\rfrom_language\x18\x01 \x01(\tR\ffromLanguage\x12\x1f\n" +
 	"\vto_language\x18\x02 \x01(\tR\n" +
 	"toLanguage\x12\x12\n" +
 	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
 	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
-	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"\x8f\x01\n" +
-	"\x15TranslateWordResponse\x12#\n" +
-	"\roriginal_word\x18\x01 \x01(\tR\foriginalWord\x12'\n" +
-	"\x0ftranslated_word\x18\x02 \x01(\tR\x0etranslatedWord\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio2\xad\x02\n" +
+	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"{\n" +
+	"\x11TranslateResponse\x12\x1a\n" +
+	"\boriginal\x18\x01 \x01(\tR\boriginal\x12 \n" +
+	"\vtranslation\x18\x02 \x01(\tR\vtranslation\x12(\n" +
+	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio2\xa5\x02\n" +
 	"\vSentenceGen\x12_\n" +
-	"\x10GenerateSentence\x12$.sentencegen.GenerateSentenceRequest\x1a%.sentencegen.GenerateSentenceResponse\x12V\n" +
-	"\rTranslateWord\x12!.sentencegen.TranslateWordRequest\x1a\".sentencegen.TranslateWordResponse\x12e\n" +
+	"\x10GenerateSentence\x12$.sentencegen.GenerateSentenceRequest\x1a%.sentencegen.GenerateSentenceResponse\x12N\n" +
+	"\rTranslateWord\x12\x1d.sentencegen.TranslateRequest\x1a\x1e.sentencegen.TranslateResponse\x12e\n" +
 	"\x12GenerateDefinition\x12&.sentencegen.GenerateDefinitionRequest\x1a'.sentencegen.GenerateDefinitionResponseB\x0eZ\fclient/protob\x06proto3"
 
 var (
@@ -529,18 +529,18 @@ var file_proto_sentence_gen_proto_goTypes = []any{
 	(*GenerateSentenceResponse)(nil),   // 2: sentencegen.GenerateSentenceResponse
 	(*GenerateDefinitionRequest)(nil),  // 3: sentencegen.GenerateDefinitionRequest
 	(*GenerateDefinitionResponse)(nil), // 4: sentencegen.GenerateDefinitionResponse
-	(*TranslateWordRequest)(nil),       // 5: sentencegen.TranslateWordRequest
-	(*TranslateWordResponse)(nil),      // 6: sentencegen.TranslateWordResponse
+	(*TranslateRequest)(nil),           // 5: sentencegen.TranslateRequest
+	(*TranslateResponse)(nil),          // 6: sentencegen.TranslateResponse
 }
 var file_proto_sentence_gen_proto_depIdxs = []int32{
 	0, // 0: sentencegen.GenerateSentenceResponse.audio:type_name -> sentencegen.Audio
 	0, // 1: sentencegen.GenerateDefinitionResponse.audio:type_name -> sentencegen.Audio
-	0, // 2: sentencegen.TranslateWordResponse.audio:type_name -> sentencegen.Audio
+	0, // 2: sentencegen.TranslateResponse.audio:type_name -> sentencegen.Audio
 	1, // 3: sentencegen.SentenceGen.GenerateSentence:input_type -> sentencegen.GenerateSentenceRequest
-	5, // 4: sentencegen.SentenceGen.TranslateWord:input_type -> sentencegen.TranslateWordRequest
+	5, // 4: sentencegen.SentenceGen.TranslateWord:input_type -> sentencegen.TranslateRequest
 	3, // 5: sentencegen.SentenceGen.GenerateDefinition:input_type -> sentencegen.GenerateDefinitionRequest
 	2, // 6: sentencegen.SentenceGen.GenerateSentence:output_type -> sentencegen.GenerateSentenceResponse
-	6, // 7: sentencegen.SentenceGen.TranslateWord:output_type -> sentencegen.TranslateWordResponse
+	6, // 7: sentencegen.SentenceGen.TranslateWord:output_type -> sentencegen.TranslateResponse
 	4, // 8: sentencegen.SentenceGen.GenerateDefinition:output_type -> sentencegen.GenerateDefinitionResponse
 	6, // [6:9] is the sub-list for method output_type
 	3, // [3:6] is the sub-list for method input_type
