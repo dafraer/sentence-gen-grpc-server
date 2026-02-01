@@ -42,7 +42,7 @@ func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*C
 }
 
 // GenerateSentence sends a text-only request to Gemini
-func (c *Client) GenerateSentence(ctx context.Context, word, wordLang, targetLang, translationHint string) (SentenceGenerationResponse, error) {
+func (c *Client) GenerateSentence(ctx context.Context, word, wordLanguage, translationLanguage, translationHint string) (SentenceGenerationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -66,7 +66,7 @@ func (c *Client) GenerateSentence(ctx context.Context, word, wordLang, targetLan
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatSentenceGenPrompt(wordLang, targetLang, word, translationHint)),
+		genai.Text(formatSentenceGenPrompt(wordLanguage, translationLanguage, word, translationHint)),
 		config,
 	)
 	if err != nil {
@@ -81,7 +81,7 @@ func (c *Client) GenerateSentence(ctx context.Context, word, wordLang, targetLan
 	return resp, nil
 }
 
-func (c *Client) Translate(ctx context.Context, word, fromLang, toLang, translationHint string) (TranslationResponse, error) {
+func (c *Client) Translate(ctx context.Context, word, fromLanguage, toLanguage, translationHint string) (TranslationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -101,7 +101,7 @@ func (c *Client) Translate(ctx context.Context, word, fromLang, toLang, translat
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatTranslationPrompt(word, fromLang, toLang, translationHint)),
+		genai.Text(formatTranslationPrompt(word, fromLanguage, toLanguage, translationHint)),
 		config,
 	)
 	if err != nil {
@@ -151,12 +151,12 @@ func (c *Client) GenerateDefinition(ctx context.Context, word, language, definit
 	return resp, nil
 }
 
-func formatSentenceGenPrompt(fromLanguage, toLanguage, word, translationHint string) string {
-	return fmt.Sprintf(generateSentencePrompt, fromLanguage, word, toLanguage, translationHint)
+func formatSentenceGenPrompt(wordLanguage, translationLanguage, word, translationHint string) string {
+	return fmt.Sprintf(generateSentencePrompt, wordLanguage, word, translationLanguage, translationHint)
 }
 
-func formatTranslationPrompt(word, fromLang, toLang, translationHint string) string {
-	return fmt.Sprintf(translationPrompt, word, fromLang, toLang, translationHint)
+func formatTranslationPrompt(word, fromLanguage, toLanguage, translationHint string) string {
+	return fmt.Sprintf(translationPrompt, word, fromLanguage, toLanguage, translationHint)
 }
 
 func formatDefinitionPrompt(language, word, definitionHint string) string {

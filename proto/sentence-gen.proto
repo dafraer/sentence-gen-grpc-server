@@ -10,7 +10,7 @@ message Audio {
 
 message GenerateSentenceRequest {
   string word_language = 1;
-  string target_language = 2;
+  string translation_language = 2;
   string word = 3;
   string translation_hint = 4;
   bool include_audio = 5;

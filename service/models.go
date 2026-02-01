@@ -1,10 +1,11 @@
 package service
 
 type GenerateSentenceRequest struct {
-	Word            string
-	FromLanguage    string
-	ToLanguage      string
-	TranslationHint string
+	Word                string
+	WordLanguage        string
+	TranslationLanguage string
+	TranslationHint     string
+	IncludeAudio        bool
 }
 
 type GenerateSentenceResponse struct {
@@ -17,6 +18,7 @@ type GenerateDefinitionRequest struct {
 	Word           string
 	Language       string
 	DefinitionHint string
+	IncludeAudio   bool
 }
 
 type GenerateDefinitionResponse struct {
@@ -29,6 +31,7 @@ type TranslateRequest struct {
 	FromLanguage    string
 	ToLanguage      string
 	TranslationHint string
+	IncludeAudio    bool
 }
 
 type TranslateResponse struct {

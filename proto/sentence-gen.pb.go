@@ -66,14 +66,14 @@ func (x *Audio) GetData() []byte {
 }
 
 type GenerateSentenceRequest struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	WordLanguage    string                 `protobuf:"bytes,1,opt,name=word_language,json=wordLanguage,proto3" json:"word_language,omitempty"`
-	TargetLanguage  string                 `protobuf:"bytes,2,opt,name=target_language,json=targetLanguage,proto3" json:"target_language,omitempty"`
-	Word            string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
-	TranslationHint string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
-	IncludeAudio    bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	WordLanguage        string                 `protobuf:"bytes,1,opt,name=word_language,json=wordLanguage,proto3" json:"word_language,omitempty"`
+	TranslationLanguage string                 `protobuf:"bytes,2,opt,name=translation_language,json=translationLanguage,proto3" json:"translation_language,omitempty"`
+	Word                string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
+	TranslationHint     string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
+	IncludeAudio        bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *GenerateSentenceRequest) Reset() {
@@ -113,9 +113,9 @@ func (x *GenerateSentenceRequest) GetWordLanguage() string {
 	return ""
 }
 
-func (x *GenerateSentenceRequest) GetTargetLanguage() string {
+func (x *GenerateSentenceRequest) GetTranslationLanguage() string {
 	if x != nil {
-		return x.TargetLanguage
+		return x.TranslationLanguage
 	}
 	return ""
 }
@@ -455,10 +455,10 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\n" +
 	"\x18proto/sentence-gen.proto\x12\vsentencegen\"\x1b\n" +
 	"\x05Audio\x12\x12\n" +
-	"\x04data\x18\x01 \x01(\fR\x04data\"\xcb\x01\n" +
+	"\x04data\x18\x01 \x01(\fR\x04data\"\xd5\x01\n" +
 	"\x17GenerateSentenceRequest\x12#\n" +
-	"\rword_language\x18\x01 \x01(\tR\fwordLanguage\x12'\n" +
-	"\x0ftarget_language\x18\x02 \x01(\tR\x0etargetLanguage\x12\x12\n" +
+	"\rword_language\x18\x01 \x01(\tR\fwordLanguage\x121\n" +
+	"\x14translation_language\x18\x02 \x01(\tR\x13translationLanguage\x12\x12\n" +
 	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
 	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
 	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"\xa2\x01\n" +
