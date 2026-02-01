@@ -41,13 +41,8 @@ func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*C
 	return &Client{client: client, logger: logger, geminiModel: geminiModel}, nil
 }
 
-type SentenceGenerationResponse struct {
-	OriginalSentence   string `json:"original_sentence"`
-	TranslatedSentence string `json:"translated_sentence"`
-}
-
 // GenerateSentence sends a text-only request to Gemini
-func (c *Client) GenerateSentence(ctx context.Context, word, fromLang, toLang, translationHint string) (SentenceGenerationResponse, error) {
+func (c *Client) GenerateSentence(ctx context.Context, word, wordLang, targetLang, translationHint string) (SentenceGenerationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -71,7 +66,7 @@ func (c *Client) GenerateSentence(ctx context.Context, word, fromLang, toLang, t
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatSentenceGenPrompt(fromLang, toLang, word, translationHint)),
+		genai.Text(formatSentenceGenPrompt(wordLang, targetLang, word, translationHint)),
 		config,
 	)
 	if err != nil {
@@ -86,28 +81,19 @@ func (c *Client) GenerateSentence(ctx context.Context, word, fromLang, toLang, t
 	return resp, nil
 }
 
-type TranslationResponse struct {
-	Original    string `json:"original"`
-	Translation string `json:"translation"`
-}
-
 func (c *Client) Translate(ctx context.Context, word, fromLang, toLang, translationHint string) (TranslationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
 			Type: genai.TypeObject,
 			Properties: map[string]*genai.Schema{
-				"original": {
-					Type:        genai.TypeString,
-					Description: "Original provided word/phrase for translation",
-				},
 				"translation": {
 					Type:        genai.TypeString,
 					Description: "Translated word/phrase",
 				},
 			},
-			Required:         []string{"original", "translation"},
-			PropertyOrdering: []string{"original", "translation"},
+			Required:         []string{"translation"},
+			PropertyOrdering: []string{"translation"},
 		},
 	}
 
@@ -130,28 +116,19 @@ func (c *Client) Translate(ctx context.Context, word, fromLang, toLang, translat
 	return resp, nil
 }
 
-type DefinitionResponse struct {
-	Word       string `json:"word"`
-	Definition string `json:"definition"`
-}
-
-func (c *Client) GenerateDefinition(ctx context.Context, word, lang, definitionHint string) (DefinitionResponse, error) {
+func (c *Client) GenerateDefinition(ctx context.Context, word, language, definitionHint string) (DefinitionResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
 			Type: genai.TypeObject,
 			Properties: map[string]*genai.Schema{
-				"word": {
-					Type:        genai.TypeString,
-					Description: "Original provided word/phrase for definition",
-				},
 				"definition": {
 					Type:        genai.TypeString,
 					Description: "Definition of the word/phrase",
 				},
 			},
-			Required:         []string{"word", "definition"},
-			PropertyOrdering: []string{"word", "definition"},
+			Required:         []string{"definition"},
+			PropertyOrdering: []string{"definition"},
 		},
 	}
 
@@ -159,7 +136,7 @@ func (c *Client) GenerateDefinition(ctx context.Context, word, lang, definitionH
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatDefinitionPrompt(lang, word, definitionHint)),
+		genai.Text(formatDefinitionPrompt(language, word, definitionHint)),
 		config,
 	)
 	if err != nil {

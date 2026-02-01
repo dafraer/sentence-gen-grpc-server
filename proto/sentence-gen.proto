@@ -9,17 +9,17 @@ message Audio {
 }
 
 message GenerateSentenceRequest {
-  string from_language = 1;
-  string to_language = 2;
+  string word_language = 1;
+  string target_language = 2;
   string word = 3;
-  string translation = 4;
+  string translation_hint = 4;
   bool include_audio = 5;
 }
 
 message GenerateSentenceResponse {
   string original_sentence = 1;
   string translated_sentence = 2;
-  Audio audio = 3;
+  Audio audio = 3; //audio in a language of the word
 }
 
 message GenerateDefinitionRequest {
@@ -30,9 +30,8 @@ message GenerateDefinitionRequest {
 }
 
 message GenerateDefinitionResponse {
-  string word = 1;
   string definition = 2;
-  Audio audio = 3;
+  Audio audio = 3; //word audio
 }
 
 message TranslateRequest {
@@ -44,7 +43,6 @@ message TranslateRequest {
 }
 
 message TranslateResponse {
-  string original = 1;
   string translation = 2;
   Audio audio = 3;
 }

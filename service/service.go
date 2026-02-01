@@ -22,3 +22,15 @@ func New(ttsClient *tts.Client, geminiClient *gemini.Client, logger *zap.Sugared
 		store:        store,
 	}
 }
+
+func (s *Service) GenerateSentence(req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Translate(req *TranslateRequest) (*TranslateResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) GenerateDefinition(req *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
+	return nil, nil
+}

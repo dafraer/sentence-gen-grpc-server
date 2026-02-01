@@ -66,14 +66,14 @@ func (x *Audio) GetData() []byte {
 }
 
 type GenerateSentenceRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	FromLanguage  string                 `protobuf:"bytes,1,opt,name=from_language,json=fromLanguage,proto3" json:"from_language,omitempty"`
-	ToLanguage    string                 `protobuf:"bytes,2,opt,name=to_language,json=toLanguage,proto3" json:"to_language,omitempty"`
-	Word          string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
-	Translation   string                 `protobuf:"bytes,4,opt,name=translation,proto3" json:"translation,omitempty"`
-	IncludeAudio  bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	WordLanguage    string                 `protobuf:"bytes,1,opt,name=word_language,json=wordLanguage,proto3" json:"word_language,omitempty"`
+	TargetLanguage  string                 `protobuf:"bytes,2,opt,name=target_language,json=targetLanguage,proto3" json:"target_language,omitempty"`
+	Word            string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
+	TranslationHint string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
+	IncludeAudio    bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GenerateSentenceRequest) Reset() {
@@ -106,16 +106,16 @@ func (*GenerateSentenceRequest) Descriptor() ([]byte, []int) {
 	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GenerateSentenceRequest) GetFromLanguage() string {
+func (x *GenerateSentenceRequest) GetWordLanguage() string {
 	if x != nil {
-		return x.FromLanguage
+		return x.WordLanguage
 	}
 	return ""
 }
 
-func (x *GenerateSentenceRequest) GetToLanguage() string {
+func (x *GenerateSentenceRequest) GetTargetLanguage() string {
 	if x != nil {
-		return x.ToLanguage
+		return x.TargetLanguage
 	}
 	return ""
 }
@@ -127,9 +127,9 @@ func (x *GenerateSentenceRequest) GetWord() string {
 	return ""
 }
 
-func (x *GenerateSentenceRequest) GetTranslation() string {
+func (x *GenerateSentenceRequest) GetTranslationHint() string {
 	if x != nil {
-		return x.Translation
+		return x.TranslationHint
 	}
 	return ""
 }
@@ -145,7 +145,7 @@ type GenerateSentenceResponse struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	OriginalSentence   string                 `protobuf:"bytes,1,opt,name=original_sentence,json=originalSentence,proto3" json:"original_sentence,omitempty"`
 	TranslatedSentence string                 `protobuf:"bytes,2,opt,name=translated_sentence,json=translatedSentence,proto3" json:"translated_sentence,omitempty"`
-	Audio              *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
+	Audio              *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"` //audio in a language of the word
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -271,9 +271,8 @@ func (x *GenerateDefinitionRequest) GetIncludeAudio() bool {
 
 type GenerateDefinitionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Word          string                 `protobuf:"bytes,1,opt,name=word,proto3" json:"word,omitempty"`
 	Definition    string                 `protobuf:"bytes,2,opt,name=definition,proto3" json:"definition,omitempty"`
-	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
+	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"` //word audio
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -306,13 +305,6 @@ func (x *GenerateDefinitionResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use GenerateDefinitionResponse.ProtoReflect.Descriptor instead.
 func (*GenerateDefinitionResponse) Descriptor() ([]byte, []int) {
 	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *GenerateDefinitionResponse) GetWord() string {
-	if x != nil {
-		return x.Word
-	}
-	return ""
 }
 
 func (x *GenerateDefinitionResponse) GetDefinition() string {
@@ -407,7 +399,6 @@ func (x *TranslateRequest) GetIncludeAudio() bool {
 
 type TranslateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Original      string                 `protobuf:"bytes,1,opt,name=original,proto3" json:"original,omitempty"`
 	Translation   string                 `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
 	Audio         *Audio                 `protobuf:"bytes,3,opt,name=audio,proto3" json:"audio,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -444,13 +435,6 @@ func (*TranslateResponse) Descriptor() ([]byte, []int) {
 	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *TranslateResponse) GetOriginal() string {
-	if x != nil {
-		return x.Original
-	}
-	return ""
-}
-
 func (x *TranslateResponse) GetTranslation() string {
 	if x != nil {
 		return x.Translation
@@ -471,13 +455,12 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\n" +
 	"\x18proto/sentence-gen.proto\x12\vsentencegen\"\x1b\n" +
 	"\x05Audio\x12\x12\n" +
-	"\x04data\x18\x01 \x01(\fR\x04data\"\xba\x01\n" +
+	"\x04data\x18\x01 \x01(\fR\x04data\"\xcb\x01\n" +
 	"\x17GenerateSentenceRequest\x12#\n" +
-	"\rfrom_language\x18\x01 \x01(\tR\ffromLanguage\x12\x1f\n" +
-	"\vto_language\x18\x02 \x01(\tR\n" +
-	"toLanguage\x12\x12\n" +
-	"\x04word\x18\x03 \x01(\tR\x04word\x12 \n" +
-	"\vtranslation\x18\x04 \x01(\tR\vtranslation\x12#\n" +
+	"\rword_language\x18\x01 \x01(\tR\fwordLanguage\x12'\n" +
+	"\x0ftarget_language\x18\x02 \x01(\tR\x0etargetLanguage\x12\x12\n" +
+	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
+	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
 	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"\xa2\x01\n" +
 	"\x18GenerateSentenceResponse\x12+\n" +
 	"\x11original_sentence\x18\x01 \x01(\tR\x10originalSentence\x12/\n" +
@@ -487,9 +470,8 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\blanguage\x18\x01 \x01(\tR\blanguage\x12\x12\n" +
 	"\x04word\x18\x02 \x01(\tR\x04word\x12'\n" +
 	"\x0fdefinition_hint\x18\x03 \x01(\tR\x0edefinitionHint\x12#\n" +
-	"\rinclude_audio\x18\x04 \x01(\bR\fincludeAudio\"z\n" +
-	"\x1aGenerateDefinitionResponse\x12\x12\n" +
-	"\x04word\x18\x01 \x01(\tR\x04word\x12\x1e\n" +
+	"\rinclude_audio\x18\x04 \x01(\bR\fincludeAudio\"f\n" +
+	"\x1aGenerateDefinitionResponse\x12\x1e\n" +
 	"\n" +
 	"definition\x18\x02 \x01(\tR\n" +
 	"definition\x12(\n" +
@@ -500,9 +482,8 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"toLanguage\x12\x12\n" +
 	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
 	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
-	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"{\n" +
-	"\x11TranslateResponse\x12\x1a\n" +
-	"\boriginal\x18\x01 \x01(\tR\boriginal\x12 \n" +
+	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"_\n" +
+	"\x11TranslateResponse\x12 \n" +
 	"\vtranslation\x18\x02 \x01(\tR\vtranslation\x12(\n" +
 	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio2\xa5\x02\n" +
 	"\vSentenceGen\x12_\n" +
