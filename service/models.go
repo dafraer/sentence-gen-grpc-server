@@ -36,4 +36,5 @@ type TranslateRequest struct {
 
 type TranslateResponse struct {
 	Translation string
+	Audio       []byte
 }

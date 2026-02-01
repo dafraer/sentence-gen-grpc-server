@@ -7,6 +7,10 @@ import (
 	"go.uber.org/zap"
 )
 
+var (
+	ErrEmpty
+)
+
 type Service struct {
 	ttsClient    *tts.Client
 	geminiClient *gemini.Client
@@ -24,6 +28,12 @@ func New(ttsClient *tts.Client, geminiClient *gemini.Client, logger *zap.Sugared
 }
 
 func (s *Service) GenerateSentence(req *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
+	if req.Word == "" || req.WordLanguage == "" || req.TranslationLanguage == "" {
+
+	}
+	if req.IncludeAudio {
+
+	}
 	return nil, nil
 }
 

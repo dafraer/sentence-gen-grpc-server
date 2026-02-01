@@ -42,7 +42,7 @@ func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*C
 }
 
 // GenerateSentence sends a text-only request to Gemini
-func (c *Client) GenerateSentence(ctx context.Context, word, wordLanguage, translationLanguage, translationHint string) (SentenceGenerationResponse, error) {
+func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRequest) (*SentenceGenerationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -66,22 +66,22 @@ func (c *Client) GenerateSentence(ctx context.Context, word, wordLanguage, trans
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatSentenceGenPrompt(wordLanguage, translationLanguage, word, translationHint)),
+		genai.Text(formatSentenceGenPrompt(req.WordLanguage, req.TranslationLanguage, req.Word, req.TranslationHint)),
 		config,
 	)
 	if err != nil {
-		return SentenceGenerationResponse{}, err
+		return nil, err
 	}
 
 	//Unmarshal response
-	var resp SentenceGenerationResponse
-	if err := json.Unmarshal([]byte(result.Text()), &resp); err != nil {
-		return SentenceGenerationResponse{}, err
+	resp := &SentenceGenerationResponse{}
+	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		return nil, err
 	}
 	return resp, nil
 }
 
-func (c *Client) Translate(ctx context.Context, word, fromLanguage, toLanguage, translationHint string) (TranslationResponse, error) {
+func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*TranslationResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -101,22 +101,22 @@ func (c *Client) Translate(ctx context.Context, word, fromLanguage, toLanguage, 
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatTranslationPrompt(word, fromLanguage, toLanguage, translationHint)),
+		genai.Text(formatTranslationPrompt(req.Word, req.FromLanguage, req.ToLanguage, req.TranslationHint)),
 		config,
 	)
 	if err != nil {
-		return TranslationResponse{}, err
+		return nil, err
 	}
 
 	//Unmarshal response
-	var resp TranslationResponse
-	if err := json.Unmarshal([]byte(result.Text()), &resp); err != nil {
-		return TranslationResponse{}, err
+	resp := &TranslationResponse{}
+	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		return nil, err
 	}
 	return resp, nil
 }
 
-func (c *Client) GenerateDefinition(ctx context.Context, word, language, definitionHint string) (DefinitionResponse, error) {
+func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest) (*DefinitionResponse, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -136,17 +136,17 @@ func (c *Client) GenerateDefinition(ctx context.Context, word, language, definit
 	result, err := c.client.Models.GenerateContent(
 		ctx,
 		c.geminiModel,
-		genai.Text(formatDefinitionPrompt(language, word, definitionHint)),
+		genai.Text(formatDefinitionPrompt(req.Language, req.Word, req.DefinitionHint)),
 		config,
 	)
 	if err != nil {
-		return DefinitionResponse{}, err
+		return nil, err
 	}
 
 	//Unmarshal response
-	var resp DefinitionResponse
-	if err := json.Unmarshal([]byte(result.Text()), &resp); err != nil {
-		return DefinitionResponse{}, err
+	resp := &DefinitionResponse{}
+	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		return nil, err
 	}
 	return resp, nil
 }
