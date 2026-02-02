@@ -2,7 +2,7 @@ package tts
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"strings"
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
@@ -15,6 +15,10 @@ const (
 	Standard = "Standard"
 	Male     = "MALE"
 	Female   = "FEMALE"
+)
+
+var (
+	ErrNoSuchVoice = errors.New("no such voice")
 )
 
 type Client struct {
@@ -60,7 +64,7 @@ func (c *Client) Generate(ctx context.Context, text, languageCode, gender, model
 		}
 	}
 	if name == "" {
-		return nil, fmt.Errorf("could not find voice with name %s and gender %s", model, gender)
+		return nil, ErrNoSuchVoice
 	}
 
 	// Perform the text-to-speech request on the text input with the selected voice parameters and audio file type.

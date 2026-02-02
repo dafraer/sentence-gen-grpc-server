@@ -1,11 +1,19 @@
 package service
 
+const (
+	Female = iota
+	Male
+)
+
+type Gender int
+
 type GenerateSentenceRequest struct {
 	Word                string
 	WordLanguage        string
 	TranslationLanguage string
 	TranslationHint     string
 	IncludeAudio        bool
+	VoiceGender         Gender
 }
 
 type GenerateSentenceResponse struct {
@@ -19,6 +27,7 @@ type GenerateDefinitionRequest struct {
 	Language       string
 	DefinitionHint string
 	IncludeAudio   bool
+	VoiceGender    Gender
 }
 
 type GenerateDefinitionResponse struct {
@@ -32,6 +41,7 @@ type TranslateRequest struct {
 	ToLanguage      string
 	TranslationHint string
 	IncludeAudio    bool
+	VoiceGender     Gender
 }
 
 type TranslateResponse struct {

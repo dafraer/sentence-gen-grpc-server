@@ -21,6 +21,52 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Gender int32
+
+const (
+	Gender_GENDER_FEMALE Gender = 0
+	Gender_GENDER_MALE   Gender = 1
+)
+
+// Enum value maps for Gender.
+var (
+	Gender_name = map[int32]string{
+		0: "GENDER_FEMALE",
+		1: "GENDER_MALE",
+	}
+	Gender_value = map[string]int32{
+		"GENDER_FEMALE": 0,
+		"GENDER_MALE":   1,
+	}
+)
+
+func (x Gender) Enum() *Gender {
+	p := new(Gender)
+	*p = x
+	return p
+}
+
+func (x Gender) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Gender) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_sentence_gen_proto_enumTypes[0].Descriptor()
+}
+
+func (Gender) Type() protoreflect.EnumType {
+	return &file_proto_sentence_gen_proto_enumTypes[0]
+}
+
+func (x Gender) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Gender.Descriptor instead.
+func (Gender) EnumDescriptor() ([]byte, []int) {
+	return file_proto_sentence_gen_proto_rawDescGZIP(), []int{0}
+}
+
 type Audio struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Data          []byte                 `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
@@ -72,6 +118,7 @@ type GenerateSentenceRequest struct {
 	Word                string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
 	TranslationHint     string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
 	IncludeAudio        bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender         Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -141,6 +188,13 @@ func (x *GenerateSentenceRequest) GetIncludeAudio() bool {
 	return false
 }
 
+func (x *GenerateSentenceRequest) GetVoiceGender() Gender {
+	if x != nil {
+		return x.VoiceGender
+	}
+	return Gender_GENDER_FEMALE
+}
+
 type GenerateSentenceResponse struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	OriginalSentence   string                 `protobuf:"bytes,1,opt,name=original_sentence,json=originalSentence,proto3" json:"original_sentence,omitempty"`
@@ -207,6 +261,7 @@ type GenerateDefinitionRequest struct {
 	Word           string                 `protobuf:"bytes,2,opt,name=word,proto3" json:"word,omitempty"`
 	DefinitionHint string                 `protobuf:"bytes,3,opt,name=definition_hint,json=definitionHint,proto3" json:"definition_hint,omitempty"`
 	IncludeAudio   bool                   `protobuf:"varint,4,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender    Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -269,6 +324,13 @@ func (x *GenerateDefinitionRequest) GetIncludeAudio() bool {
 	return false
 }
 
+func (x *GenerateDefinitionRequest) GetVoiceGender() Gender {
+	if x != nil {
+		return x.VoiceGender
+	}
+	return Gender_GENDER_FEMALE
+}
+
 type GenerateDefinitionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Definition    string                 `protobuf:"bytes,2,opt,name=definition,proto3" json:"definition,omitempty"`
@@ -328,6 +390,7 @@ type TranslateRequest struct {
 	Word            string                 `protobuf:"bytes,3,opt,name=word,proto3" json:"word,omitempty"`
 	TranslationHint string                 `protobuf:"bytes,4,opt,name=translation_hint,json=translationHint,proto3" json:"translation_hint,omitempty"`
 	IncludeAudio    bool                   `protobuf:"varint,5,opt,name=include_audio,json=includeAudio,proto3" json:"include_audio,omitempty"`
+	VoiceGender     Gender                 `protobuf:"varint,6,opt,name=voice_gender,json=voiceGender,proto3,enum=sentencegen.Gender" json:"voice_gender,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -397,6 +460,13 @@ func (x *TranslateRequest) GetIncludeAudio() bool {
 	return false
 }
 
+func (x *TranslateRequest) GetVoiceGender() Gender {
+	if x != nil {
+		return x.VoiceGender
+	}
+	return Gender_GENDER_FEMALE
+}
+
 type TranslateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Translation   string                 `protobuf:"bytes,2,opt,name=translation,proto3" json:"translation,omitempty"`
@@ -455,37 +525,43 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\n" +
 	"\x18proto/sentence-gen.proto\x12\vsentencegen\"\x1b\n" +
 	"\x05Audio\x12\x12\n" +
-	"\x04data\x18\x01 \x01(\fR\x04data\"\xd5\x01\n" +
+	"\x04data\x18\x01 \x01(\fR\x04data\"\x8d\x02\n" +
 	"\x17GenerateSentenceRequest\x12#\n" +
 	"\rword_language\x18\x01 \x01(\tR\fwordLanguage\x121\n" +
 	"\x14translation_language\x18\x02 \x01(\tR\x13translationLanguage\x12\x12\n" +
 	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
 	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
-	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"\xa2\x01\n" +
+	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\x126\n" +
+	"\fvoice_gender\x18\x06 \x01(\x0e2\x13.sentencegen.GenderR\vvoiceGender\"\xa2\x01\n" +
 	"\x18GenerateSentenceResponse\x12+\n" +
 	"\x11original_sentence\x18\x01 \x01(\tR\x10originalSentence\x12/\n" +
 	"\x13translated_sentence\x18\x02 \x01(\tR\x12translatedSentence\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\x99\x01\n" +
+	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xd1\x01\n" +
 	"\x19GenerateDefinitionRequest\x12\x1a\n" +
 	"\blanguage\x18\x01 \x01(\tR\blanguage\x12\x12\n" +
 	"\x04word\x18\x02 \x01(\tR\x04word\x12'\n" +
 	"\x0fdefinition_hint\x18\x03 \x01(\tR\x0edefinitionHint\x12#\n" +
-	"\rinclude_audio\x18\x04 \x01(\bR\fincludeAudio\"f\n" +
+	"\rinclude_audio\x18\x04 \x01(\bR\fincludeAudio\x126\n" +
+	"\fvoice_gender\x18\x06 \x01(\x0e2\x13.sentencegen.GenderR\vvoiceGender\"f\n" +
 	"\x1aGenerateDefinitionResponse\x12\x1e\n" +
 	"\n" +
 	"definition\x18\x02 \x01(\tR\n" +
 	"definition\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xbc\x01\n" +
+	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio\"\xf4\x01\n" +
 	"\x10TranslateRequest\x12#\n" +
 	"\rfrom_language\x18\x01 \x01(\tR\ffromLanguage\x12\x1f\n" +
 	"\vto_language\x18\x02 \x01(\tR\n" +
 	"toLanguage\x12\x12\n" +
 	"\x04word\x18\x03 \x01(\tR\x04word\x12)\n" +
 	"\x10translation_hint\x18\x04 \x01(\tR\x0ftranslationHint\x12#\n" +
-	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\"_\n" +
+	"\rinclude_audio\x18\x05 \x01(\bR\fincludeAudio\x126\n" +
+	"\fvoice_gender\x18\x06 \x01(\x0e2\x13.sentencegen.GenderR\vvoiceGender\"_\n" +
 	"\x11TranslateResponse\x12 \n" +
 	"\vtranslation\x18\x02 \x01(\tR\vtranslation\x12(\n" +
-	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio2\xa5\x02\n" +
+	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio*,\n" +
+	"\x06Gender\x12\x11\n" +
+	"\rGENDER_FEMALE\x10\x00\x12\x0f\n" +
+	"\vGENDER_MALE\x10\x012\xa5\x02\n" +
 	"\vSentenceGen\x12_\n" +
 	"\x10GenerateSentence\x12$.sentencegen.GenerateSentenceRequest\x1a%.sentencegen.GenerateSentenceResponse\x12N\n" +
 	"\rTranslateWord\x12\x1d.sentencegen.TranslateRequest\x1a\x1e.sentencegen.TranslateResponse\x12e\n" +
@@ -503,31 +579,36 @@ func file_proto_sentence_gen_proto_rawDescGZIP() []byte {
 	return file_proto_sentence_gen_proto_rawDescData
 }
 
+var file_proto_sentence_gen_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_proto_sentence_gen_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_sentence_gen_proto_goTypes = []any{
-	(*Audio)(nil),                      // 0: sentencegen.Audio
-	(*GenerateSentenceRequest)(nil),    // 1: sentencegen.GenerateSentenceRequest
-	(*GenerateSentenceResponse)(nil),   // 2: sentencegen.GenerateSentenceResponse
-	(*GenerateDefinitionRequest)(nil),  // 3: sentencegen.GenerateDefinitionRequest
-	(*GenerateDefinitionResponse)(nil), // 4: sentencegen.GenerateDefinitionResponse
-	(*TranslateRequest)(nil),           // 5: sentencegen.TranslateRequest
-	(*TranslateResponse)(nil),          // 6: sentencegen.TranslateResponse
+	(Gender)(0),                        // 0: sentencegen.Gender
+	(*Audio)(nil),                      // 1: sentencegen.Audio
+	(*GenerateSentenceRequest)(nil),    // 2: sentencegen.GenerateSentenceRequest
+	(*GenerateSentenceResponse)(nil),   // 3: sentencegen.GenerateSentenceResponse
+	(*GenerateDefinitionRequest)(nil),  // 4: sentencegen.GenerateDefinitionRequest
+	(*GenerateDefinitionResponse)(nil), // 5: sentencegen.GenerateDefinitionResponse
+	(*TranslateRequest)(nil),           // 6: sentencegen.TranslateRequest
+	(*TranslateResponse)(nil),          // 7: sentencegen.TranslateResponse
 }
 var file_proto_sentence_gen_proto_depIdxs = []int32{
-	0, // 0: sentencegen.GenerateSentenceResponse.audio:type_name -> sentencegen.Audio
-	0, // 1: sentencegen.GenerateDefinitionResponse.audio:type_name -> sentencegen.Audio
-	0, // 2: sentencegen.TranslateResponse.audio:type_name -> sentencegen.Audio
-	1, // 3: sentencegen.SentenceGen.GenerateSentence:input_type -> sentencegen.GenerateSentenceRequest
-	5, // 4: sentencegen.SentenceGen.TranslateWord:input_type -> sentencegen.TranslateRequest
-	3, // 5: sentencegen.SentenceGen.GenerateDefinition:input_type -> sentencegen.GenerateDefinitionRequest
-	2, // 6: sentencegen.SentenceGen.GenerateSentence:output_type -> sentencegen.GenerateSentenceResponse
-	6, // 7: sentencegen.SentenceGen.TranslateWord:output_type -> sentencegen.TranslateResponse
-	4, // 8: sentencegen.SentenceGen.GenerateDefinition:output_type -> sentencegen.GenerateDefinitionResponse
-	6, // [6:9] is the sub-list for method output_type
-	3, // [3:6] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	0, // 0: sentencegen.GenerateSentenceRequest.voice_gender:type_name -> sentencegen.Gender
+	1, // 1: sentencegen.GenerateSentenceResponse.audio:type_name -> sentencegen.Audio
+	0, // 2: sentencegen.GenerateDefinitionRequest.voice_gender:type_name -> sentencegen.Gender
+	1, // 3: sentencegen.GenerateDefinitionResponse.audio:type_name -> sentencegen.Audio
+	0, // 4: sentencegen.TranslateRequest.voice_gender:type_name -> sentencegen.Gender
+	1, // 5: sentencegen.TranslateResponse.audio:type_name -> sentencegen.Audio
+	2, // 6: sentencegen.SentenceGen.GenerateSentence:input_type -> sentencegen.GenerateSentenceRequest
+	6, // 7: sentencegen.SentenceGen.TranslateWord:input_type -> sentencegen.TranslateRequest
+	4, // 8: sentencegen.SentenceGen.GenerateDefinition:input_type -> sentencegen.GenerateDefinitionRequest
+	3, // 9: sentencegen.SentenceGen.GenerateSentence:output_type -> sentencegen.GenerateSentenceResponse
+	7, // 10: sentencegen.SentenceGen.TranslateWord:output_type -> sentencegen.TranslateResponse
+	5, // 11: sentencegen.SentenceGen.GenerateDefinition:output_type -> sentencegen.GenerateDefinitionResponse
+	9, // [9:12] is the sub-list for method output_type
+	6, // [6:9] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_proto_sentence_gen_proto_init() }
@@ -540,13 +621,14 @@ func file_proto_sentence_gen_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_sentence_gen_proto_rawDesc), len(file_proto_sentence_gen_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_proto_sentence_gen_proto_goTypes,
 		DependencyIndexes: file_proto_sentence_gen_proto_depIdxs,
+		EnumInfos:         file_proto_sentence_gen_proto_enumTypes,
 		MessageInfos:      file_proto_sentence_gen_proto_msgTypes,
 	}.Build()
 	File_proto_sentence_gen_proto = out.File

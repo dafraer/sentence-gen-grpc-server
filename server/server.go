@@ -23,8 +23,25 @@ func NewServer(srvc *service.Service, logger *zap.SugaredLogger) *Server {
 }
 
 func (s *Server) GenerateSentence(ctx context.Context, request *pb.GenerateSentenceRequest) (*pb.GenerateSentenceResponse, error) {
-	fmt.Println("GenerateSentence")
-	return &pb.GenerateSentenceResponse{}, nil
+	result, err := s.srvc.GenerateSentence(ctx, &service.GenerateSentenceRequest{
+		Word:                request.Word,
+		WordLanguage:        request.WordLanguage,
+		TranslationLanguage: request.TranslationLanguage,
+		TranslationHint:     request.TranslationHint,
+		IncludeAudio:        request.IncludeAudio,
+		VoiceGender:         service.Gender(request.VoiceGender),
+	})
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.GenerateSentenceResponse{
+		OriginalSentence:   result.OriginalSentence,
+		TranslatedSentence: result.TranslatedSentence,
+		Audio: &pb.Audio{
+			Data: result.Audio,
+		},
+	}
+	return resp, nil
 }
 
 func (s *Server) Translate(ctx context.Context, request *pb.TranslateRequest) (*pb.TranslateResponse, error) {
