@@ -58,6 +58,6 @@ message TranslateResponse {
 
 service SentenceGen {
   rpc GenerateSentence(GenerateSentenceRequest) returns (GenerateSentenceResponse);
-  rpc TranslateWord(TranslateRequest) returns (TranslateResponse);
+  rpc Translate(TranslateRequest) returns (TranslateResponse);
   rpc GenerateDefinition(GenerateDefinitionRequest) returns (GenerateDefinitionResponse);
 }

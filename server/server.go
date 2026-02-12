@@ -3,13 +3,14 @@ package server
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net"
 
 	pb "github.com/dafraer/sentence-gen-grpc-server/proto"
 	"github.com/dafraer/sentence-gen-grpc-server/service"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -23,6 +24,10 @@ func NewServer(srvc *service.Service, logger *zap.SugaredLogger) *Server {
 }
 
 func (s *Server) GenerateSentence(ctx context.Context, request *pb.GenerateSentenceRequest) (*pb.GenerateSentenceResponse, error) {
+	if request == nil {
+		return nil, status.Error(codes.InvalidArgument, "nil request")
+	}
+
 	result, err := s.srvc.GenerateSentence(ctx, &service.GenerateSentenceRequest{
 		Word:                request.Word,
 		WordLanguage:        request.WordLanguage,
@@ -32,7 +37,7 @@ func (s *Server) GenerateSentence(ctx context.Context, request *pb.GenerateSente
 		VoiceGender:         service.Gender(request.VoiceGender),
 	})
 	if err != nil {
-		return nil, err
+		return nil, formatError(err)
 	}
 	resp := &pb.GenerateSentenceResponse{
 		OriginalSentence:   result.OriginalSentence,
@@ -45,13 +50,52 @@ func (s *Server) GenerateSentence(ctx context.Context, request *pb.GenerateSente
 }
 
 func (s *Server) Translate(ctx context.Context, request *pb.TranslateRequest) (*pb.TranslateResponse, error) {
-	fmt.Println("TranslateWord")
-	return &pb.TranslateResponse{}, nil
+	if request == nil {
+		return nil, status.Error(codes.InvalidArgument, "nil request")
+	}
+
+	result, err := s.srvc.Translate(ctx, &service.TranslateRequest{
+		Word:            request.Word,
+		FromLanguage:    request.FromLanguage,
+		ToLanguage:      request.ToLanguage,
+		TranslationHint: request.TranslationHint,
+		IncludeAudio:    request.IncludeAudio,
+		VoiceGender:     service.Gender(request.VoiceGender),
+	})
+	if err != nil {
+		return nil, formatError(err)
+	}
+	resp := &pb.TranslateResponse{
+		Translation: result.Translation,
+		Audio: &pb.Audio{
+			Data: result.Audio,
+		},
+	}
+	return resp, nil
 }
 
 func (s *Server) GenerateDefinition(ctx context.Context, request *pb.GenerateDefinitionRequest) (*pb.GenerateDefinitionResponse, error) {
-	fmt.Println("GenerateDefinition")
-	return &pb.GenerateDefinitionResponse{Definition: request.DefinitionHint}, nil
+	if request == nil {
+		return nil, status.Error(codes.InvalidArgument, "nil request")
+	}
+
+	result, err := s.srvc.GenerateDefinition(ctx, &service.GenerateDefinitionRequest{
+		Word:           request.Word,
+		Language:       request.Language,
+		DefinitionHint: request.DefinitionHint,
+		IncludeAudio:   request.IncludeAudio,
+	})
+	if err != nil {
+		return nil, formatError(err)
+	}
+	resp := &pb.GenerateDefinitionResponse{
+		Definition: result.Definition,
+		Audio: &pb.Audio{
+			Data: result.Audio,
+		},
+	}
+
+	return resp, nil
 }
 
 func (s *Server) Run(ctx context.Context, addr string) error {
@@ -90,4 +134,13 @@ func (s *Server) Run(ctx context.Context, addr string) error {
 		return err
 	}
 	return nil
+}
+
+func formatError(err error) error {
+	switch {
+	case errors.Is(err, service.ErrInvalidRequest) || errors.Is(err, service.ErrInvalidResponse):
+		return status.Error(codes.InvalidArgument, err.Error())
+	default:
+		return status.Error(codes.Internal, err.Error())
+	}
 }

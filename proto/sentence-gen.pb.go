@@ -561,10 +561,10 @@ const file_proto_sentence_gen_proto_rawDesc = "" +
 	"\x05audio\x18\x03 \x01(\v2\x12.sentencegen.AudioR\x05audio*,\n" +
 	"\x06Gender\x12\x11\n" +
 	"\rGENDER_FEMALE\x10\x00\x12\x0f\n" +
-	"\vGENDER_MALE\x10\x012\xa5\x02\n" +
+	"\vGENDER_MALE\x10\x012\xa1\x02\n" +
 	"\vSentenceGen\x12_\n" +
-	"\x10GenerateSentence\x12$.sentencegen.GenerateSentenceRequest\x1a%.sentencegen.GenerateSentenceResponse\x12N\n" +
-	"\rTranslateWord\x12\x1d.sentencegen.TranslateRequest\x1a\x1e.sentencegen.TranslateResponse\x12e\n" +
+	"\x10GenerateSentence\x12$.sentencegen.GenerateSentenceRequest\x1a%.sentencegen.GenerateSentenceResponse\x12J\n" +
+	"\tTranslate\x12\x1d.sentencegen.TranslateRequest\x1a\x1e.sentencegen.TranslateResponse\x12e\n" +
 	"\x12GenerateDefinition\x12&.sentencegen.GenerateDefinitionRequest\x1a'.sentencegen.GenerateDefinitionResponseB\x0eZ\fclient/protob\x06proto3"
 
 var (
@@ -599,10 +599,10 @@ var file_proto_sentence_gen_proto_depIdxs = []int32{
 	0, // 4: sentencegen.TranslateRequest.voice_gender:type_name -> sentencegen.Gender
 	1, // 5: sentencegen.TranslateResponse.audio:type_name -> sentencegen.Audio
 	2, // 6: sentencegen.SentenceGen.GenerateSentence:input_type -> sentencegen.GenerateSentenceRequest
-	6, // 7: sentencegen.SentenceGen.TranslateWord:input_type -> sentencegen.TranslateRequest
+	6, // 7: sentencegen.SentenceGen.Translate:input_type -> sentencegen.TranslateRequest
 	4, // 8: sentencegen.SentenceGen.GenerateDefinition:input_type -> sentencegen.GenerateDefinitionRequest
 	3, // 9: sentencegen.SentenceGen.GenerateSentence:output_type -> sentencegen.GenerateSentenceResponse
-	7, // 10: sentencegen.SentenceGen.TranslateWord:output_type -> sentencegen.TranslateResponse
+	7, // 10: sentencegen.SentenceGen.Translate:output_type -> sentencegen.TranslateResponse
 	5, // 11: sentencegen.SentenceGen.GenerateDefinition:output_type -> sentencegen.GenerateDefinitionResponse
 	9, // [9:12] is the sub-list for method output_type
 	6, // [6:9] is the sub-list for method input_type

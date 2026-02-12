@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	SentenceGen_GenerateSentence_FullMethodName   = "/sentencegen.SentenceGen/GenerateSentence"
-	SentenceGen_TranslateWord_FullMethodName      = "/sentencegen.SentenceGen/TranslateWord"
+	SentenceGen_Translate_FullMethodName          = "/sentencegen.SentenceGen/Translate"
 	SentenceGen_GenerateDefinition_FullMethodName = "/sentencegen.SentenceGen/GenerateDefinition"
 )
 
@@ -29,7 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SentenceGenClient interface {
 	GenerateSentence(ctx context.Context, in *GenerateSentenceRequest, opts ...grpc.CallOption) (*GenerateSentenceResponse, error)
-	TranslateWord(ctx context.Context, in *TranslateRequest, opts ...grpc.CallOption) (*TranslateResponse, error)
+	Translate(ctx context.Context, in *TranslateRequest, opts ...grpc.CallOption) (*TranslateResponse, error)
 	GenerateDefinition(ctx context.Context, in *GenerateDefinitionRequest, opts ...grpc.CallOption) (*GenerateDefinitionResponse, error)
 }
 
@@ -51,10 +51,10 @@ func (c *sentenceGenClient) GenerateSentence(ctx context.Context, in *GenerateSe
 	return out, nil
 }
 
-func (c *sentenceGenClient) TranslateWord(ctx context.Context, in *TranslateRequest, opts ...grpc.CallOption) (*TranslateResponse, error) {
+func (c *sentenceGenClient) Translate(ctx context.Context, in *TranslateRequest, opts ...grpc.CallOption) (*TranslateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TranslateResponse)
-	err := c.cc.Invoke(ctx, SentenceGen_TranslateWord_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, SentenceGen_Translate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *sentenceGenClient) GenerateDefinition(ctx context.Context, in *Generate
 // for forward compatibility.
 type SentenceGenServer interface {
 	GenerateSentence(context.Context, *GenerateSentenceRequest) (*GenerateSentenceResponse, error)
-	TranslateWord(context.Context, *TranslateRequest) (*TranslateResponse, error)
+	Translate(context.Context, *TranslateRequest) (*TranslateResponse, error)
 	GenerateDefinition(context.Context, *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error)
 	mustEmbedUnimplementedSentenceGenServer()
 }
@@ -91,8 +91,8 @@ type UnimplementedSentenceGenServer struct{}
 func (UnimplementedSentenceGenServer) GenerateSentence(context.Context, *GenerateSentenceRequest) (*GenerateSentenceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateSentence not implemented")
 }
-func (UnimplementedSentenceGenServer) TranslateWord(context.Context, *TranslateRequest) (*TranslateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TranslateWord not implemented")
+func (UnimplementedSentenceGenServer) Translate(context.Context, *TranslateRequest) (*TranslateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Translate not implemented")
 }
 func (UnimplementedSentenceGenServer) GenerateDefinition(context.Context, *GenerateDefinitionRequest) (*GenerateDefinitionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateDefinition not implemented")
@@ -136,20 +136,20 @@ func _SentenceGen_GenerateSentence_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SentenceGen_TranslateWord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SentenceGen_Translate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TranslateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SentenceGenServer).TranslateWord(ctx, in)
+		return srv.(SentenceGenServer).Translate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SentenceGen_TranslateWord_FullMethodName,
+		FullMethod: SentenceGen_Translate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SentenceGenServer).TranslateWord(ctx, req.(*TranslateRequest))
+		return srv.(SentenceGenServer).Translate(ctx, req.(*TranslateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -184,8 +184,8 @@ var SentenceGen_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SentenceGen_GenerateSentence_Handler,
 		},
 		{
-			MethodName: "TranslateWord",
-			Handler:    _SentenceGen_TranslateWord_Handler,
+			MethodName: "Translate",
+			Handler:    _SentenceGen_Translate_Handler,
 		},
 		{
 			MethodName: "GenerateDefinition",
