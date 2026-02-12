@@ -48,3 +48,10 @@ type TranslateResponse struct {
 	Translation string
 	Audio       []byte
 }
+
+type UpdateDailySpendingParams struct {
+	GeminiInputTokens  int
+	GeminiOutputTokens int
+	Characters         int
+	TTSModel           string
+}

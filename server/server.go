@@ -104,7 +104,9 @@ func (s *Server) Run(ctx context.Context, addr string) error {
 		panic(err)
 	}
 
-	opts := []grpc.ServerOption{}
+	opts := []grpc.ServerOption{
+		grpc.UnaryInterceptor(s.quotaLimitInterceptor),
+	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterSentenceGenServer(srv, s)
 

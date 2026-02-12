@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/dafraer/sentence-gen-grpc-server/config"
 	"github.com/dafraer/sentence-gen-grpc-server/db"
 	"github.com/dafraer/sentence-gen-grpc-server/gemini"
 	"github.com/dafraer/sentence-gen-grpc-server/tts"
@@ -15,14 +16,16 @@ type Service struct {
 	geminiClient *gemini.Client
 	logger       *zap.SugaredLogger
 	store        *db.Store
+	config       *config.Config
 }
 
-func New(ttsClient *tts.Client, geminiClient *gemini.Client, logger *zap.SugaredLogger, store *db.Store) *Service {
+func New(ttsClient *tts.Client, geminiClient *gemini.Client, logger *zap.SugaredLogger, store *db.Store, cfg *config.Config) *Service {
 	return &Service{
 		ttsClient:    ttsClient,
 		geminiClient: geminiClient,
 		logger:       logger,
 		store:        store,
+		config:       cfg,
 	}
 }
 

@@ -5,26 +5,20 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/dafraer/sentence-gen-grpc-server/config"
 	"github.com/dafraer/sentence-gen-grpc-server/db"
 	"github.com/dafraer/sentence-gen-grpc-server/gemini"
 	"github.com/dafraer/sentence-gen-grpc-server/server"
 	"github.com/dafraer/sentence-gen-grpc-server/service"
 	"github.com/dafraer/sentence-gen-grpc-server/tts"
-	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic("Error loading .env file")
-	}
 
-	projectID := os.Getenv("PROJECT_ID")
-	addr := os.Getenv("ADDRESS")
-	geminiModel := os.Getenv("GEMINI_MODEL")
-	if addr == "" || projectID == "" {
-		panic("Missing GEMINI_API_KEY, PROJECT_ID or PORT")
+	cfg, err := config.New()
+	if err != nil {
+		panic(err)
 	}
 
 	//Create logger
@@ -39,13 +33,22 @@ func main() {
 	defer cancel()
 
 	//Create firestore client
-	store, err := db.New(ctx, sugar, projectID)
+	store, err := db.New(ctx, sugar, cfg.ProjectID)
 	if err != nil {
 		panic(err)
 	}
+	defer func(store *db.Store) {
+		if err := store.Close(); err != nil {
+			panic(err)
+		}
+	}(store)
+	if err := store.UpdateDailySpending(ctx, &db.Spending{}); err != nil {
+		panic(err)
+	}
+	return
 
 	//Create gemini client
-	geminiClient, err := gemini.New(ctx, sugar, geminiModel)
+	geminiClient, err := gemini.New(ctx, sugar, cfg.GeminiModel)
 	if err != nil {
 		panic(err)
 	}
@@ -62,13 +65,13 @@ func main() {
 	}()
 
 	//Create new service
-	srvc := service.New(ttsClient, geminiClient, sugar, store)
+	srvc := service.New(ttsClient, geminiClient, sugar, store, cfg)
 
 	//Create new grpc server
 	srv := server.NewServer(srvc, sugar)
 
 	//Run the server
-	if err := srv.Run(ctx, addr); err != nil {
+	if err := srv.Run(ctx, cfg.Address); err != nil {
 		panic(err)
 	}
 }
