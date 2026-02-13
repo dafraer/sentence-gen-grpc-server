@@ -11,9 +11,14 @@ import (
 )
 
 const (
-	collectionName = "spending"
-	documentDaily  = "daily"
-	documentTotal  = "total"
+	collectionSpending    = "spending"
+	documentDaily         = "daily"
+	documentTotal         = "total"
+	amountKey             = "amount_micro_usd"
+	chirp3HDCharsKey      = "chirp3hd_characters"
+	standardVoiceCharsKey = "standard_voice_characters"
+	geminiInputTokensKey  = "gemini_input_tokens"
+	geminiOutputTokensKey = "gemini_output_tokens"
 )
 
 type Store struct {
@@ -52,29 +57,45 @@ func (s *Store) Close() error {
 }
 
 func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
-	dsnap, err := s.db.Collection(collectionName).Doc(documentDaily).Get(ctx)
+	docSnap, err := s.db.Collection(collectionSpending).Doc(documentDaily).Get(ctx)
 	if err != nil {
 		return nil, err
 	}
-	m := dsnap.Data()
-	_ = m
-	return &Spending{}, nil
+
+	var sp Spending
+	if err := docSnap.DataTo(&sp); err != nil {
+		return nil, err
+	}
+	return &sp, nil
 }
 
+// UpdateDailySpending updates all the fields in the daily spending doc
 func (s *Store) UpdateDailySpending(ctx context.Context, params *Spending) error {
-	doc := s.db.Collection("spending").Doc("daily")
-	_, err := doc.Set(ctx, params, firestore.MergeAll)
+	_, err := s.db.
+		Collection(collectionSpending).
+		Doc(documentDaily).
+		Set(ctx, params)
 	return err
 }
 
-func (s *Store) DeleteDailySpending() error {
-	return nil
+// UpdateTotalSpending updates all the fields in the total spending doc
+func (s *Store) UpdateTotalSpending(ctx context.Context, params *Spending) error {
+	_, err := s.db.
+		Collection(collectionSpending).
+		Doc(documentTotal).
+		Set(ctx, params)
+	return err
 }
 
-func (s *Store) UpdateTotalSpending(params *Spending) error {
-	return nil
-}
+func (s *Store) GetTotalSpending(ctx context.Context) (*Spending, error) {
+	docSnap, err := s.db.Collection(collectionSpending).Doc(documentTotal).Get(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-func (s *Store) GetTotalSpending() (*Spending, error) {
-	return nil, nil
+	var sp Spending
+	if err := docSnap.DataTo(&sp); err != nil {
+		return nil, err
+	}
+	return &sp, nil
 }

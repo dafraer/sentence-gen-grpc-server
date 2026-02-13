@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 
@@ -42,9 +43,14 @@ func main() {
 			panic(err)
 		}
 	}(store)
-	if err := store.UpdateDailySpending(ctx, &db.Spending{}); err != nil {
+	if err := store.UpdateDailySpending(ctx, &db.Spending{StandardVoiceCharacters: 10}); err != nil {
 		panic(err)
 	}
+	spending, err := store.GetDailySpending(ctx)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(*spending)
 	return
 
 	//Create gemini client
