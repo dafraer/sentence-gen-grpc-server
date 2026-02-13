@@ -43,7 +43,7 @@ func (s *Service) AddSpending(ctx context.Context, params *UpdateDailySpendingPa
 	}
 
 	sp := db.Spending{}
-
+	//TODO:Fix incorrect calculation of free tier
 	if params.TTSModel == tts.Chirp3HD {
 		if totalSpending.Chirp3HDCharacters > chirp3HDVoiceFreeLimit {
 			sp.Amount += currency.MicroUSD(params.Characters) * chirp3HDVoicePerCharacterPrice

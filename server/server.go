@@ -101,7 +101,7 @@ func (s *Server) GenerateDefinition(ctx context.Context, request *pb.GenerateDef
 func (s *Server) Run(ctx context.Context, addr string) error {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	opts := []grpc.ServerOption{

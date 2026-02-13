@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -44,7 +43,7 @@ func New(ctx context.Context, logger *zap.SugaredLogger, projectID string) (*Sto
 
 	client, err := app.Firestore(ctx)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	return &Store{db: client, logger: logger}, nil
 }

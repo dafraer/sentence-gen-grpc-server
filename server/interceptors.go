@@ -9,11 +9,11 @@ import (
 )
 
 func (s *Server) quotaLimitInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	ok, err := s.srvc.DailyQuotaExceeded(ctx)
+	exceeded, err := s.srvc.DailyQuotaExceeded(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	if !ok {
+	if exceeded {
 		return nil, status.Errorf(codes.ResourceExhausted, "daily quota limit exceeded")
 	}
 	return handler(ctx, req)
