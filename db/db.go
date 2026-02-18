@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -68,21 +69,18 @@ func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
 	return &sp, nil
 }
 
-// UpdateDailySpending updates all the fields in the daily spending doc
-func (s *Store) UpdateDailySpending(ctx context.Context, params *Spending) error {
+// ClearDailySpending sets all fields in daily spending document to 0
+func (s *Store) ClearDailySpending(ctx context.Context) error {
 	_, err := s.db.
 		Collection(collectionSpending).
 		Doc(documentDaily).
-		Set(ctx, params)
-	return err
-}
-
-// UpdateTotalSpending updates all the fields in the total spending doc
-func (s *Store) UpdateTotalSpending(ctx context.Context, params *Spending) error {
-	_, err := s.db.
-		Collection(collectionSpending).
-		Doc(documentTotal).
-		Set(ctx, params)
+		Set(ctx, map[string]interface{}{
+			amountKey:             0,
+			chirp3HDCharsKey:      0,
+			standardVoiceCharsKey: 0,
+			geminiInputTokensKey:  0,
+			geminiOutputTokensKey: 0,
+		})
 	return err
 }
 
@@ -97,4 +95,42 @@ func (s *Store) GetTotalSpending(ctx context.Context) (*Spending, error) {
 		return nil, err
 	}
 	return &sp, nil
+}
+
+// AddDailySpending updates all the fields in the daily spending doc
+func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
+	if params == nil {
+		return errors.New("params cannot be nil")
+	}
+
+	doc := s.db.Collection(collectionSpending).Doc(documentDaily)
+
+	_, err := doc.Set(ctx, map[string]interface{}{
+		amountKey:             firestore.Increment(int(params.Amount)),
+		chirp3HDCharsKey:      firestore.Increment(params.Chirp3HDCharacters),
+		standardVoiceCharsKey: firestore.Increment(params.StandardVoiceCharacters),
+		geminiInputTokensKey:  firestore.Increment(params.GeminiInputTokens),
+		geminiOutputTokensKey: firestore.Increment(params.GeminiOutputTokens),
+	}, firestore.MergeAll)
+
+	return err
+}
+
+// AddTotalSpending updates all the fields in the daily spending doc
+func (s *Store) AddTotalSpending(ctx context.Context, params *Spending) error {
+	if params == nil {
+		return errors.New("params cannot be nil")
+	}
+
+	doc := s.db.Collection(collectionSpending).Doc(documentTotal)
+
+	_, err := doc.Set(ctx, map[string]interface{}{
+		amountKey:             firestore.Increment(int(params.Amount)),
+		chirp3HDCharsKey:      firestore.Increment(params.Chirp3HDCharacters),
+		standardVoiceCharsKey: firestore.Increment(params.StandardVoiceCharacters),
+		geminiInputTokensKey:  firestore.Increment(params.GeminiInputTokens),
+		geminiOutputTokensKey: firestore.Increment(params.GeminiOutputTokens),
+	}, firestore.MergeAll)
+
+	return err
 }
