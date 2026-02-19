@@ -9,6 +9,8 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/dafraer/sentence-gen-grpc-server/currency"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -28,10 +30,10 @@ type Store struct {
 
 type Spending struct {
 	Amount                  currency.MicroUSD `firestore:"amount_micro_usd"`
-	Chirp3HDCharacters      int               `firestore:"chirp3hd_characters"`
-	StandardVoiceCharacters int               `firestore:"standard_voice_characters"`
-	GeminiInputTokens       int               `firestore:"gemini_input_tokens"`
-	GeminiOutputTokens      int               `firestore:"gemini_output_tokens"`
+	Chirp3HDCharacters      int64             `firestore:"chirp3hd_characters"`
+	StandardVoiceCharacters int64             `firestore:"standard_voice_characters"`
+	GeminiInputTokens       int64             `firestore:"gemini_input_tokens"`
+	GeminiOutputTokens      int64             `firestore:"gemini_output_tokens"`
 }
 
 // New creates new firestore instance
@@ -60,6 +62,9 @@ func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
 	day := time.Now().In(time.UTC).Format("2006-01-02")
 	docSnap, err := s.db.Collection(collectionSpending).Doc(day).Get(ctx)
 	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return &Spending{}, nil
+		}
 		return nil, err
 	}
 
@@ -73,6 +78,9 @@ func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
 func (s *Store) GetTotalSpending(ctx context.Context) (*Spending, error) {
 	docSnap, err := s.db.Collection(collectionSpending).Doc(documentTotal).Get(ctx)
 	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return &Spending{}, nil
+		}
 		return nil, err
 	}
 
@@ -93,7 +101,7 @@ func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
 	doc := s.db.Collection(collectionSpending).Doc(day)
 
 	_, err := doc.Set(ctx, map[string]interface{}{
-		amountKey:             firestore.Increment(int(params.Amount)),
+		amountKey:             firestore.Increment(int64(params.Amount)),
 		chirp3HDCharsKey:      firestore.Increment(params.Chirp3HDCharacters),
 		standardVoiceCharsKey: firestore.Increment(params.StandardVoiceCharacters),
 		geminiInputTokensKey:  firestore.Increment(params.GeminiInputTokens),
@@ -103,7 +111,7 @@ func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
 	return err
 }
 
-// AddTotalSpending updates all the fields in the daily spending doc
+// AddTotalSpending updates all the fields in the total spending doc
 func (s *Store) AddTotalSpending(ctx context.Context, params *Spending) error {
 	if params == nil {
 		return errors.New("params cannot be nil")
@@ -112,7 +120,7 @@ func (s *Store) AddTotalSpending(ctx context.Context, params *Spending) error {
 	doc := s.db.Collection(collectionSpending).Doc(documentTotal)
 
 	_, err := doc.Set(ctx, map[string]interface{}{
-		amountKey:             firestore.Increment(int(params.Amount)),
+		amountKey:             firestore.Increment(int64(params.Amount)),
 		chirp3HDCharsKey:      firestore.Increment(params.Chirp3HDCharacters),
 		standardVoiceCharsKey: firestore.Increment(params.StandardVoiceCharacters),
 		geminiInputTokensKey:  firestore.Increment(params.GeminiInputTokens),
