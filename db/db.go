@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"errors"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -12,7 +13,6 @@ import (
 
 const (
 	collectionSpending    = "spending"
-	documentDaily         = "daily"
 	documentTotal         = "total"
 	amountKey             = "amount_micro_usd"
 	chirp3HDCharsKey      = "chirp3hd_characters"
@@ -57,7 +57,8 @@ func (s *Store) Close() error {
 }
 
 func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
-	docSnap, err := s.db.Collection(collectionSpending).Doc(documentDaily).Get(ctx)
+	day := time.Now().In(time.UTC).Format("2006-01-02")
+	docSnap, err := s.db.Collection(collectionSpending).Doc(day).Get(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -67,21 +68,6 @@ func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
 		return nil, err
 	}
 	return &sp, nil
-}
-
-// ClearDailySpending sets all fields in daily spending document to 0
-func (s *Store) ClearDailySpending(ctx context.Context) error {
-	_, err := s.db.
-		Collection(collectionSpending).
-		Doc(documentDaily).
-		Set(ctx, map[string]interface{}{
-			amountKey:             0,
-			chirp3HDCharsKey:      0,
-			standardVoiceCharsKey: 0,
-			geminiInputTokensKey:  0,
-			geminiOutputTokensKey: 0,
-		})
-	return err
 }
 
 func (s *Store) GetTotalSpending(ctx context.Context) (*Spending, error) {
@@ -103,7 +89,8 @@ func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
 		return errors.New("params cannot be nil")
 	}
 
-	doc := s.db.Collection(collectionSpending).Doc(documentDaily)
+	day := time.Now().In(time.UTC).Format("2006-01-02")
+	doc := s.db.Collection(collectionSpending).Doc(day)
 
 	_, err := doc.Set(ctx, map[string]interface{}{
 		amountKey:             firestore.Increment(int(params.Amount)),

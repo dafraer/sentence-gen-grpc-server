@@ -64,10 +64,3 @@ func TestStore_AddTotalSpending(t *testing.T) {
 	}))
 	assert.NoError(t, s.Close())
 }
-
-func TestStore_DeleteDailySpending(t *testing.T) {
-	s, err := initDB()
-	assert.NoError(t, err)
-	assert.NoError(t, s.ClearDailySpending(context.Background()))
-	assert.NoError(t, s.Close())
-}
