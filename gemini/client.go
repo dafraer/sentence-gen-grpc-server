@@ -18,11 +18,11 @@ Generate a simple sentence in %s using the word %s.
 -Translation hint:%s`
 	generateDefinitionPrompt = `
 Generate a simple definition in %s for the word/term %s.  
--If the word/term doesn't exist leave the fields empty 
+-If the word/term doesn't exist in the language leave the fields empty 
 -Definition hint:%s`
 	translationPrompt = `
 Translate word/phrase %s from language %s to %s.
--If the word/phrase doesn't exist leave the fields empty
+-If the word/phrase doesn't exist in the language leave the fields empty
 -Translation hint:%s`
 )
 
@@ -34,15 +34,21 @@ type Client struct {
 
 // New creates new gemini client
 func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*Client, error) {
+	logger.Infow("initializing gemini client", "model", geminiModel)
 	client, err := genai.NewClient(ctx, nil)
 	if err != nil {
+		logger.Errorw("failed to initialize gemini client", "error", err)
 		return nil, err
 	}
+	logger.Infow("gemini client initialized", "model", geminiModel)
 	return &Client{client: client, logger: logger, geminiModel: geminiModel}, nil
 }
 
 // GenerateSentence sends a text-only request to Gemini
 func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRequest) (*SentenceGenerationResponse, *Tokens, error) {
+	c.logger.Debugw("gemini generate sentence request started", "word", req.Word, "word_language", req.WordLanguage, "translation_language", req.TranslationLanguage)
+
+	//Create a config for structured output
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -70,12 +76,14 @@ func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRe
 		config,
 	)
 	if err != nil {
+		c.logger.Errorw("gemini generate sentence request failed", "error", err)
 		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &SentenceGenerationResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		c.logger.Errorw("failed to unmarshal gemini sentence response", "error", err)
 		return nil, nil, err
 	}
 
@@ -84,10 +92,14 @@ func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRe
 		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
 		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
 	}
+	c.logger.Debugw("gemini generate sentence request completed", "input_tokens", tokens.InputTokens, "output_tokens", tokens.OutputTokens)
 	return resp, tokens, nil
 }
 
 func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*TranslationResponse, *Tokens, error) {
+	c.logger.Debugw("gemini translate request started", "word", req.Word, "from_language", req.FromLanguage, "to_language", req.ToLanguage)
+
+	//Create a config for structured output
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -111,12 +123,14 @@ func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*Trans
 		config,
 	)
 	if err != nil {
+		c.logger.Errorw("gemini translate request failed", "error", err)
 		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &TranslationResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		c.logger.Errorw("failed to unmarshal gemini translation response", "error", err)
 		return nil, nil, err
 	}
 
@@ -125,11 +139,15 @@ func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*Trans
 		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
 		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
 	}
+	c.logger.Debugw("gemini translate request completed", "input_tokens", tokens.InputTokens, "output_tokens", tokens.OutputTokens)
 
 	return resp, tokens, nil
 }
 
 func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest) (*DefinitionResponse, *Tokens, error) {
+	c.logger.Debugw("gemini generate definition request started", "word", req.Word, "language", req.Language)
+
+	//Create a config for structured output
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -153,12 +171,14 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest)
 		config,
 	)
 	if err != nil {
+		c.logger.Errorw("gemini generate definition request failed", "error", err)
 		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &DefinitionResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
+		c.logger.Errorw("failed to unmarshal gemini definition response", "error", err)
 		return nil, nil, err
 	}
 	//Calculate tokens spent
@@ -166,6 +186,7 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest)
 		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
 		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
 	}
+	c.logger.Debugw("gemini generate definition request completed", "input_tokens", tokens.InputTokens, "output_tokens", tokens.OutputTokens)
 	return resp, tokens, nil
 }
 

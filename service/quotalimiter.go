@@ -15,18 +15,23 @@ const (
 )
 
 func (s *Service) DailyQuotaExceeded(ctx context.Context) (bool, error) {
+	s.logger.Debugw("checking daily quota")
 	spending, err := s.store.GetDailySpending(ctx)
 	if err != nil {
+		s.logger.Errorw("failed to get daily spending", "error", err)
 		return false, err
 	}
 	if spending.Amount >= s.config.DailyQuota {
+		s.logger.Infow("daily quota exceeded", "amount", spending.Amount, "quota", s.config.DailyQuota)
 		return true, nil
 	}
+	s.logger.Debugw("daily quota check passed", "amount", spending.Amount, "quota", s.config.DailyQuota)
 	return false, nil
 }
 
 func (s *Service) AddSpending(ctx context.Context, params *AddDailySpendingParams) error {
 	if params == nil {
+		s.logger.Errorw("add spending failed: nil params", "error", errors.New("params cannot be nil"))
 		return errors.New("params cannot be nil")
 	}
 
@@ -54,8 +59,10 @@ func (s *Service) AddSpending(ctx context.Context, params *AddDailySpendingParam
 		GeminiInputTokens:       sp.GeminiInputTokens,
 		GeminiOutputTokens:      sp.GeminiOutputTokens,
 	}); err != nil {
+		s.logger.Errorw("failed to persist spending", "error", err)
 		return err
 	}
+	s.logger.Debugw("spending persisted", "amount", sp.Amount, "chirp3hd_characters", sp.Chirp3HDCharacters, "standard_characters", sp.StandardVoiceCharacters, "gemini_input_tokens", sp.GeminiInputTokens, "gemini_output_tokens", sp.GeminiOutputTokens)
 
 	return nil
 }
