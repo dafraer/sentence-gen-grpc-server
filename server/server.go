@@ -84,6 +84,7 @@ func (s *Server) GenerateDefinition(ctx context.Context, request *pb.GenerateDef
 		Language:       request.Language,
 		DefinitionHint: request.DefinitionHint,
 		IncludeAudio:   request.IncludeAudio,
+		VoiceGender:    service.Gender(request.VoiceGender),
 	})
 	if err != nil {
 		return nil, formatError(err)

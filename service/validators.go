@@ -97,7 +97,7 @@ func validateWord(word string) error {
 	switch {
 	case word == "":
 		return ErrEmptyWord
-	case len(word) > maxWordLength:
+	case len([]rune(word)) > maxWordLength:
 		return ErrWordTooLong
 	}
 	return nil
@@ -109,7 +109,7 @@ func validateLanguageCode(languageCode string) error {
 }
 
 func validateHint(hint string) error {
-	if len(hint) > maxHintLength {
+	if len([]rune(hint)) > maxHintLength {
 		return ErrHintTooLong
 	}
 	return nil

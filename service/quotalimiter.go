@@ -19,7 +19,7 @@ func (s *Service) DailyQuotaExceeded(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if spending.Amount > s.config.DailyQuota {
+	if spending.Amount >= s.config.DailyQuota {
 		return true, nil
 	}
 	return false, nil

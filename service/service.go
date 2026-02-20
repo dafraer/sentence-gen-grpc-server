@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"unicode/utf8"
 
 	"github.com/dafraer/sentence-gen-grpc-server/config"
 	"github.com/dafraer/sentence-gen-grpc-server/db"
@@ -63,17 +62,18 @@ func (s *Service) GenerateSentence(ctx context.Context, req *GenerateSentenceReq
 			gender = tts.Male
 		}
 		audio, err := s.ttsClient.Generate(ctx, sentences.OriginalSentence, req.WordLanguage, gender, tts.Chirp3HD) //TODO: Should be variable in the future
-		if err != nil {
+		if err != nil && !errors.Is(err, tts.ErrNoSuchVoice) {
 			return nil, err
 		}
 
-		if err := s.AddSpending(ctx, &AddDailySpendingParams{
-			Characters: int64(utf8.RuneCountInString(sentences.OriginalSentence)),
-			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
-		}); err != nil {
-			return nil, err
+		if !errors.Is(err, tts.ErrNoSuchVoice) {
+			if err := s.AddSpending(ctx, &AddDailySpendingParams{
+				Characters: int64(len([]rune(sentences.OriginalSentence))),
+				TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+			}); err != nil {
+				return nil, err
+			}
 		}
-
 		resp.Audio = audio
 	}
 
@@ -116,15 +116,17 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 			gender = tts.Male
 		}
 		audio, err := s.ttsClient.Generate(ctx, req.Word, req.FromLanguage, gender, tts.Chirp3HD)
-		if err != nil {
+		if err != nil && !errors.Is(err, tts.ErrNoSuchVoice) {
 			return nil, err
 		}
 
-		if err := s.AddSpending(ctx, &AddDailySpendingParams{
-			Characters: int64(utf8.RuneCountInString(req.Word)),
-			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
-		}); err != nil {
-			return nil, err
+		if !errors.Is(err, tts.ErrNoSuchVoice) {
+			if err := s.AddSpending(ctx, &AddDailySpendingParams{
+				Characters: int64(len([]rune(req.Word))),
+				TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+			}); err != nil {
+				return nil, err
+			}
 		}
 
 		resp.Audio = audio
@@ -170,11 +172,13 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 			return nil, err
 		}
 
-		if err := s.AddSpending(ctx, &AddDailySpendingParams{
-			Characters: int64(utf8.RuneCountInString(req.Word)),
-			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
-		}); err != nil {
-			return nil, err
+		if !errors.Is(err, tts.ErrNoSuchVoice) {
+			if err := s.AddSpending(ctx, &AddDailySpendingParams{
+				Characters: int64(len([]rune(req.Word))),
+				TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+			}); err != nil {
+				return nil, err
+			}
 		}
 
 		resp.Audio = audio
