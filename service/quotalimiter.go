@@ -57,14 +57,5 @@ func (s *Service) AddSpending(ctx context.Context, params *AddDailySpendingParam
 		return err
 	}
 
-	if err := s.store.AddTotalSpending(ctx, &db.Spending{
-		Amount:                  sp.Amount,
-		Chirp3HDCharacters:      sp.Chirp3HDCharacters,
-		StandardVoiceCharacters: sp.StandardVoiceCharacters,
-		GeminiInputTokens:       sp.GeminiInputTokens,
-		GeminiOutputTokens:      sp.GeminiOutputTokens,
-	}); err != nil {
-		return err
-	}
 	return nil
 }

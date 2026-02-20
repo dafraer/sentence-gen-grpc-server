@@ -15,7 +15,6 @@ import (
 
 const (
 	collectionSpending    = "spending"
-	documentTotal         = "total"
 	amountKey             = "amount_micro_usd"
 	chirp3HDCharsKey      = "chirp3hd_characters"
 	standardVoiceCharsKey = "standard_voice_characters"
@@ -75,22 +74,6 @@ func (s *Store) GetDailySpending(ctx context.Context) (*Spending, error) {
 	return &sp, nil
 }
 
-func (s *Store) GetTotalSpending(ctx context.Context) (*Spending, error) {
-	docSnap, err := s.db.Collection(collectionSpending).Doc(documentTotal).Get(ctx)
-	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return &Spending{}, nil
-		}
-		return nil, err
-	}
-
-	var sp Spending
-	if err := docSnap.DataTo(&sp); err != nil {
-		return nil, err
-	}
-	return &sp, nil
-}
-
 // AddDailySpending updates all the fields in the daily spending doc
 func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
 	if params == nil {
@@ -99,25 +82,6 @@ func (s *Store) AddDailySpending(ctx context.Context, params *Spending) error {
 
 	day := time.Now().In(time.UTC).Format("2006-01-02")
 	doc := s.db.Collection(collectionSpending).Doc(day)
-
-	_, err := doc.Set(ctx, map[string]interface{}{
-		amountKey:             firestore.Increment(int64(params.Amount)),
-		chirp3HDCharsKey:      firestore.Increment(params.Chirp3HDCharacters),
-		standardVoiceCharsKey: firestore.Increment(params.StandardVoiceCharacters),
-		geminiInputTokensKey:  firestore.Increment(params.GeminiInputTokens),
-		geminiOutputTokensKey: firestore.Increment(params.GeminiOutputTokens),
-	}, firestore.MergeAll)
-
-	return err
-}
-
-// AddTotalSpending updates all the fields in the total spending doc
-func (s *Store) AddTotalSpending(ctx context.Context, params *Spending) error {
-	if params == nil {
-		return errors.New("params cannot be nil")
-	}
-
-	doc := s.db.Collection(collectionSpending).Doc(documentTotal)
 
 	_, err := doc.Set(ctx, map[string]interface{}{
 		amountKey:             firestore.Increment(int64(params.Amount)),
