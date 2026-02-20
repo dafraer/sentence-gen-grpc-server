@@ -137,7 +137,7 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest)
 			Properties: map[string]*genai.Schema{
 				"definition": {
 					Type:        genai.TypeString,
-					Description: "Definition of the word/phrase",
+					Description: "Definition of the word/phrase without the word/phrase itself",
 				},
 			},
 			Required:         []string{"definition"},
