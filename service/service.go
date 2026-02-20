@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"unicode/utf8"
 
 	"github.com/dafraer/sentence-gen-grpc-server/config"
 	"github.com/dafraer/sentence-gen-grpc-server/db"
@@ -34,7 +35,7 @@ func (s *Service) GenerateSentence(ctx context.Context, req *GenerateSentenceReq
 		return nil, err
 	}
 
-	sentences, err := s.geminiClient.GenerateSentence(ctx, &gemini.SentenceGenerationRequest{
+	sentences, tokenCnt, err := s.geminiClient.GenerateSentence(ctx, &gemini.SentenceGenerationRequest{
 		Word:                req.Word,
 		WordLanguage:        req.WordLanguage,
 		TranslationLanguage: req.TranslationLanguage,
@@ -49,15 +50,30 @@ func (s *Service) GenerateSentence(ctx context.Context, req *GenerateSentenceReq
 		TranslatedSentence: sentences.TranslatedSentence,
 	}
 
+	if err := s.AddSpending(ctx, &AddDailySpendingParams{
+		GeminiInputTokens:  tokenCnt.InputTokens,
+		GeminiOutputTokens: tokenCnt.OutputTokens,
+	}); err != nil {
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
 			gender = tts.Male
 		}
-		audio, err := s.ttsClient.Generate(ctx, sentences.OriginalSentence, req.WordLanguage, gender, tts.Chirp3HD)
+		audio, err := s.ttsClient.Generate(ctx, sentences.OriginalSentence, req.WordLanguage, gender, tts.Chirp3HD) //TODO: Should be variable in the future
 		if err != nil {
 			return nil, err
 		}
+
+		if err := s.AddSpending(ctx, &AddDailySpendingParams{
+			Characters: int64(utf8.RuneCountInString(sentences.OriginalSentence)),
+			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+		}); err != nil {
+			return nil, err
+		}
+
 		resp.Audio = audio
 	}
 
@@ -73,7 +89,7 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 		return nil, err
 	}
 
-	translation, err := s.geminiClient.Translate(ctx, &gemini.TranslationRequest{
+	translation, tokenCnt, err := s.geminiClient.Translate(ctx, &gemini.TranslationRequest{
 		Word:            req.Word,
 		FromLanguage:    req.FromLanguage,
 		ToLanguage:      req.ToLanguage,
@@ -87,6 +103,13 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 		Translation: translation.Translation,
 	}
 
+	if err := s.AddSpending(ctx, &AddDailySpendingParams{
+		GeminiInputTokens:  tokenCnt.InputTokens,
+		GeminiOutputTokens: tokenCnt.OutputTokens,
+	}); err != nil {
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
@@ -96,6 +119,14 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 		if err != nil {
 			return nil, err
 		}
+
+		if err := s.AddSpending(ctx, &AddDailySpendingParams{
+			Characters: int64(utf8.RuneCountInString(req.Word)),
+			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+		}); err != nil {
+			return nil, err
+		}
+
 		resp.Audio = audio
 	}
 
@@ -110,7 +141,7 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 	if err := req.validate(); err != nil {
 		return nil, err
 	}
-	definition, err := s.geminiClient.GenerateDefinition(ctx, &gemini.DefinitionRequest{
+	definition, tokenCnt, err := s.geminiClient.GenerateDefinition(ctx, &gemini.DefinitionRequest{
 		Word:           req.Word,
 		Language:       req.Language,
 		DefinitionHint: req.DefinitionHint,
@@ -122,6 +153,13 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 		Definition: definition.Definition,
 	}
 
+	if err := s.AddSpending(ctx, &AddDailySpendingParams{
+		GeminiInputTokens:  tokenCnt.InputTokens,
+		GeminiOutputTokens: tokenCnt.OutputTokens,
+	}); err != nil {
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
@@ -131,6 +169,14 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 		if err != nil && !errors.Is(err, tts.ErrNoSuchVoice) {
 			return nil, err
 		}
+
+		if err := s.AddSpending(ctx, &AddDailySpendingParams{
+			Characters: int64(utf8.RuneCountInString(req.Word)),
+			TTSModel:   tts.Chirp3HD, //TODO: Should be variable in the future
+		}); err != nil {
+			return nil, err
+		}
+
 		resp.Audio = audio
 	}
 

@@ -42,7 +42,7 @@ func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*C
 }
 
 // GenerateSentence sends a text-only request to Gemini
-func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRequest) (*SentenceGenerationResponse, error) {
+func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRequest) (*SentenceGenerationResponse, *Tokens, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -70,18 +70,24 @@ func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRe
 		config,
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &SentenceGenerationResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return resp, nil
+
+	//Calculate tokens spent
+	tokens := &Tokens{
+		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
+		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
+	}
+	return resp, tokens, nil
 }
 
-func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*TranslationResponse, error) {
+func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*TranslationResponse, *Tokens, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -105,18 +111,25 @@ func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*Trans
 		config,
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &TranslationResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return resp, nil
+
+	//Calculate tokens spent
+	tokens := &Tokens{
+		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
+		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
+	}
+
+	return resp, tokens, nil
 }
 
-func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest) (*DefinitionResponse, error) {
+func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest) (*DefinitionResponse, *Tokens, error) {
 	config := &genai.GenerateContentConfig{
 		ResponseMIMEType: "application/json",
 		ResponseSchema: &genai.Schema{
@@ -140,15 +153,20 @@ func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest)
 		config,
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	//Unmarshal response
 	resp := &DefinitionResponse{}
 	if err := json.Unmarshal([]byte(result.Text()), resp); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return resp, nil
+	//Calculate tokens spent
+	tokens := &Tokens{
+		OutputTokens: int64(result.UsageMetadata.CandidatesTokenCount),
+		InputTokens:  int64(result.UsageMetadata.PromptTokenCount),
+	}
+	return resp, tokens, nil
 }
 
 func formatSentenceGenPrompt(wordLanguage, translationLanguage, word, translationHint string) string {

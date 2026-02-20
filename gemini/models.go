@@ -32,3 +32,8 @@ type DefinitionRequest struct {
 type DefinitionResponse struct {
 	Definition string `json:"definition"`
 }
+
+type Tokens struct {
+	InputTokens  int64
+	OutputTokens int64
+}

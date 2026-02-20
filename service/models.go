@@ -49,9 +49,9 @@ type TranslateResponse struct {
 	Audio       []byte
 }
 
-type UpdateDailySpendingParams struct {
-	GeminiInputTokens  int
-	GeminiOutputTokens int
-	Characters         int
+type AddDailySpendingParams struct {
+	GeminiInputTokens  int64
+	GeminiOutputTokens int64
+	Characters         int64
 	TTSModel           string
 }

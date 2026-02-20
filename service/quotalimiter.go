@@ -25,7 +25,7 @@ func (s *Service) DailyQuotaExceeded(ctx context.Context) (bool, error) {
 	return false, nil
 }
 
-func (s *Service) AddSpending(ctx context.Context, params *UpdateDailySpendingParams) error {
+func (s *Service) AddSpending(ctx context.Context, params *AddDailySpendingParams) error {
 	if params == nil {
 		return errors.New("params cannot be nil")
 	}
