@@ -20,10 +20,8 @@ type Config struct {
 
 // New creates new config from the .env file
 func New() (*Config, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return nil, err
-	}
+	//Ignore the error because if we don't have .env file we are in a docker container
+	godotenv.Load()
 
 	quota, err := strconv.Atoi(os.Getenv("DAILY_QUOTA"))
 	if err != nil {
