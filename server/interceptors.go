@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// quotaLimitInterceptor checks that the request doesn't exceed daily quota
 func (s *Server) quotaLimitInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	s.logger.Debugw("quota interceptor check started", "method", info.FullMethod)
 	exceeded, err := s.srvc.DailyQuotaExceeded(ctx)

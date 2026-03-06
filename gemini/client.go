@@ -44,7 +44,7 @@ func New(ctx context.Context, logger *zap.SugaredLogger, geminiModel string) (*C
 	return &Client{client: client, logger: logger, geminiModel: geminiModel}, nil
 }
 
-// GenerateSentence sends a text-only request to Gemini
+// GenerateSentence generates sentences using Gemini
 func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRequest) (*SentenceGenerationResponse, *Tokens, error) {
 	c.logger.Debugw("gemini generate sentence request started", "word", req.Word, "word_language", req.WordLanguage, "translation_language", req.TranslationLanguage)
 
@@ -96,6 +96,7 @@ func (c *Client) GenerateSentence(ctx context.Context, req *SentenceGenerationRe
 	return resp, tokens, nil
 }
 
+// Translate translates word/phrase using gemini
 func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*TranslationResponse, *Tokens, error) {
 	c.logger.Debugw("gemini translate request started", "word", req.Word, "from_language", req.FromLanguage, "to_language", req.ToLanguage)
 
@@ -144,6 +145,7 @@ func (c *Client) Translate(ctx context.Context, req *TranslationRequest) (*Trans
 	return resp, tokens, nil
 }
 
+// GenerateDefinition generates definition using Gemini
 func (c *Client) GenerateDefinition(ctx context.Context, req *DefinitionRequest) (*DefinitionResponse, *Tokens, error) {
 	c.logger.Debugw("gemini generate definition request started", "word", req.Word, "language", req.Language)
 

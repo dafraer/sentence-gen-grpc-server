@@ -19,6 +19,7 @@ type Server struct {
 	logger *zap.SugaredLogger
 }
 
+// NewServer creates new server
 func NewServer(srvc *service.Service, logger *zap.SugaredLogger) *Server {
 	return &Server{srvc: srvc, logger: logger}
 }

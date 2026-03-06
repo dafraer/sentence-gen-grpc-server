@@ -18,6 +18,7 @@ type Config struct {
 	GeminiOutputPrice currency.MicroUSD
 }
 
+// New creates new config from the .env file
 func New() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
