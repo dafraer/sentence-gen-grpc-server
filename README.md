@@ -81,6 +81,7 @@ cp .env_example .env
 ```
 
 ```env
+GEMINI_API_KEY=<your-api-key>
 PROJECT_ID=<your-gcp-project-id>
 ADDRESS=localhost:50051
 GEMINI_MODEL=gemini-2.5-pro-preview
