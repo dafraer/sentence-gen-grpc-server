@@ -63,6 +63,11 @@ func (s *Service) GenerateSentence(ctx context.Context, req *GenerateSentenceReq
 	}
 	s.logger.Debugw("added gemini spending for sentence generation", "input_tokens", tokenCnt.InputTokens, "output_tokens", tokenCnt.OutputTokens)
 
+	if err := resp.validate(); err != nil {
+		s.logger.Errorw("generate sentence response validation failed", "error", err)
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
@@ -91,10 +96,6 @@ func (s *Service) GenerateSentence(ctx context.Context, req *GenerateSentenceReq
 		resp.Audio = audio
 	}
 
-	if err := resp.validate(); err != nil {
-		s.logger.Errorw("generate sentence response validation failed", "error", err)
-		return nil, err
-	}
 	s.logger.Infow("generate sentence request completed", "has_audio", len(resp.Audio) > 0)
 
 	return resp, nil
@@ -133,6 +134,11 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 	}
 	s.logger.Debugw("added gemini spending for translation", "input_tokens", tokenCnt.InputTokens, "output_tokens", tokenCnt.OutputTokens)
 
+	if err := resp.validate(); err != nil {
+		s.logger.Errorw("translate response validation failed", "error", err)
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
@@ -162,10 +168,6 @@ func (s *Service) Translate(ctx context.Context, req *TranslateRequest) (*Transl
 		resp.Audio = audio
 	}
 
-	if err := resp.validate(); err != nil {
-		s.logger.Errorw("translate response validation failed", "error", err)
-		return nil, err
-	}
 	s.logger.Infow("translate request completed", "has_audio", len(resp.Audio) > 0)
 
 	return resp, nil
@@ -201,6 +203,11 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 	}
 	s.logger.Debugw("added gemini spending for definition generation", "input_tokens", tokenCnt.InputTokens, "output_tokens", tokenCnt.OutputTokens)
 
+	if err := resp.validate(); err != nil {
+		s.logger.Errorw("generate definition response validation failed", "error", err)
+		return nil, err
+	}
+
 	if req.IncludeAudio {
 		gender := tts.Female
 		if req.VoiceGender == Male {
@@ -230,10 +237,6 @@ func (s *Service) GenerateDefinition(ctx context.Context, req *GenerateDefinitio
 		resp.Audio = audio
 	}
 
-	if err := resp.validate(); err != nil {
-		s.logger.Errorw("generate definition response validation failed", "error", err)
-		return nil, err
-	}
 	s.logger.Infow("generate definition request completed", "has_audio", len(resp.Audio) > 0)
 
 	return resp, nil

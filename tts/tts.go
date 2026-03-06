@@ -76,6 +76,7 @@ func (c *Client) Generate(ctx context.Context, text, languageCode, gender, model
 		c.logger.Debugw("no matching tts voice found", "language_code", languageCode, "gender", gender, "model", model)
 		return nil, ErrNoSuchVoice
 	}
+	c.logger.Debugw("voice picked", "name", name)
 
 	// Perform the text-to-speech request on the text input with the selected voice parameters and audio file type.
 	req := texttospeechpb.SynthesizeSpeechRequest{
@@ -92,7 +93,7 @@ func (c *Client) Generate(ctx context.Context, text, languageCode, gender, model
 
 		// Select the type of audio file you want returned.
 		AudioConfig: &texttospeechpb.AudioConfig{
-			AudioEncoding: texttospeechpb.AudioEncoding_MP3,
+			AudioEncoding: texttospeechpb.AudioEncoding_LINEAR16, //.wav
 		},
 	}
 
