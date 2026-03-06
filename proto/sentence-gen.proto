@@ -33,12 +33,12 @@ message GenerateDefinitionRequest {
   string word = 2;
   string definition_hint = 3;
   bool include_audio = 4;
-  Gender voice_gender = 6;
+  Gender voice_gender = 5;
 }
 
 message GenerateDefinitionResponse {
-  string definition = 2;
-  Audio audio = 3; //word audio
+  string definition = 1;
+  Audio audio = 2; //word audio
 }
 
 message TranslateRequest {
@@ -51,8 +51,8 @@ message TranslateRequest {
 }
 
 message TranslateResponse {
-  string translation = 2;
-  Audio audio = 3;
+  string translation = 1;
+  Audio audio = 2;
 }
 
 

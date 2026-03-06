@@ -52,13 +52,7 @@ func (s *Service) AddSpending(ctx context.Context, params *AddDailySpendingParam
 	sp.Amount += s.config.GeminiOutputPrice * currency.MicroUSD(params.GeminiOutputTokens)
 	sp.GeminiOutputTokens = params.GeminiOutputTokens
 
-	if err := s.store.AddDailySpending(ctx, &db.Spending{
-		Amount:                  sp.Amount,
-		Chirp3HDCharacters:      sp.Chirp3HDCharacters,
-		StandardVoiceCharacters: sp.StandardVoiceCharacters,
-		GeminiInputTokens:       sp.GeminiInputTokens,
-		GeminiOutputTokens:      sp.GeminiOutputTokens,
-	}); err != nil {
+	if err := s.store.AddDailySpending(ctx, &sp); err != nil {
 		s.logger.Errorw("failed to persist spending", "error", err)
 		return err
 	}

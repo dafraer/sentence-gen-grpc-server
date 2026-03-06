@@ -47,7 +47,7 @@ func New() (*Config, error) {
 		Address:           os.Getenv("ADDRESS"),
 		GeminiModel:       os.Getenv("GEMINI_MODEL"),
 	}
-	if cfg.DailyQuota == 0 || cfg.ProjectID == "" || cfg.Address == "" || cfg.GeminiModel == "" {
+	if cfg.DailyQuota == 0 || cfg.ProjectID == "" || cfg.Address == "" || cfg.GeminiModel == "" || cfg.GeminiInputPrice == 0 || cfg.GeminiOutputPrice == 0 {
 		return nil, errors.New("invalid configuration")
 	}
 	return cfg, nil

@@ -145,7 +145,7 @@ func (s *Server) Run(ctx context.Context, addr string) error {
 	select {
 	case <-ctx.Done():
 		s.logger.Infow("grpc server context canceled, stopping server")
-		srv.Stop()
+		srv.GracefulStop()
 		err := <-ch
 		if err != nil {
 			s.logger.Errorw("grpc server stopped with error", "error", err)

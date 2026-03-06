@@ -1,8 +1,8 @@
 package currency
 
 type (
-	MicroUSD int
-	USD      int
+	MicroUSD int64
+	USD      int64
 )
 
 const conversionRate = 1_000_000
